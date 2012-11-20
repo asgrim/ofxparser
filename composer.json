@@ -18,7 +18,7 @@
         "symfony/symfony": "2.*"
     },
     "autoload":     {
-        "psr-0": { "grimfor\\ofxparser\\OfxParserBundle": "" }
+        "psr-0": { "OfxParserBundle": "" }
     },
     "target-dir": "OfxParserBundle"
 }
