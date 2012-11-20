@@ -20,5 +20,5 @@
     "autoload":     {
         "psr-0": { "grimfor\\ofxparser\\OfxParserBundle": "" }
     },
-    "target-dir": "grimfor/ofxparser/OfxParserBundle"
+    "target-dir": "OfxParserBundle"
 }
