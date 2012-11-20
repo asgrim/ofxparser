@@ -33,3 +33,37 @@ public function registerBundles()
     );
 }
 ```
+
+## Usage
+
+``` php
+// src/Acme/FooBundle/Controller/BarController.php
+<?php
+
+namespace Acme\FooBundle\Controller;
+use Grimfor\OfxParserBundle\Classes\OfxParser;
+
+
+class BarController extends BaseController
+{
+    public function fooAction()
+    {
+        $ofx= new OFXParser();
+        $ofx->loadFromFile('example.ofx');
+        
+        $credits = $ofx->getCredits(); 
+        $debits = $ofx->getDebits(); 
+        $byDate = $ofx->getByDate(11, 02, 2009); 
+        $secMov = $ofx->getMoviment(2); // the second moviment 
+        $filtered = $ofx->filter('MEMO', 'DOC', true, true); 
+
+        return $this->render('AcmeFooBundle::layout.html.twig', array(
+            'credit' => $credits,
+            'debits' => $debits,
+            'byDate' => $byDate,
+            'secMov' => $secMov,
+            'filtered' => $filtered,
+        ));
+    }
+}
+```
