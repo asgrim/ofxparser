@@ -1,0 +1,24 @@
+{
+    "name": "Grimfor/OfxParserBundle",
+    "version": "1.0.0-alpha",
+    "description": "Simple OFX file parser.",
+    "keywords": ["symfony", "development", "bundle"],
+    "type": "symfony-bundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Guillaume Bailleul",
+            "email": "contact@guillaume-bailleul.fr",
+            "homepage": "http://www.guillaume-bailleul.fr"
+        }
+    ],
+    "require": {
+        "php": ">=5.3",
+        "symfony/framework-bundle": "2.*",
+        "symfony/symfony": "2.*"
+    },
+    "autoload":     {
+        "psr-0": { "Grimfor\\OfxParserBundle": "" }
+    },
+    "target-dir": "Grimfor/OfxParserBundle"
+}
