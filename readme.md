@@ -19,4 +19,17 @@ Now tell composer to download the bundle by running the command:
 $ php composer.phar update grimfor/ofxparser
 ```
 
-Add the namespace into your application...
+Add GrimforOfxParserBundle to your AppKernel.php
+
+``` php
+<?php
+// app/AppKernel.php
+
+public function registerBundles()
+{
+    $bundles = array(
+        // ...
+        new Grimfor\OfxParserBundle\GrimforOfxParserBundle(),
+    );
+}
+```
