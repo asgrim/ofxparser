@@ -1,5 +1,5 @@
 {
-    "name": "Grimfor/OfxParserBundle",
+    "name": "grimfor/ofxparser",
     "version": "1.0.0-alpha",
     "description": "Simple OFX file parser.",
     "keywords": ["symfony", "development", "bundle"],
@@ -18,7 +18,7 @@
         "symfony/symfony": "2.*"
     },
     "autoload":     {
-        "psr-0": { "Grimfor\\OfxParserBundle": "" }
+        "psr-0": { "grimfor\\ofxparser\\OfxParserBundle": "" }
     },
-    "target-dir": "Grimfor/OfxParserBundle"
+    "target-dir": "grimfor/ofxparser/OfxParserBundle"
 }
