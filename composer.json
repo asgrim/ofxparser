@@ -1,24 +1,25 @@
 {
-    "name": "grimfor/ofxparser",
+    "name": "asgrim/ofxparser",
     "version": "1.0.0-alpha",
-    "description": "Simple OFX file parser.",
-    "keywords": ["symfony", "development", "bundle"],
-    "type": "symfony-bundle",
+    "description": "Simple OFX file parser",
+    "keywords": ["ofx","open financial exchange","finance","parser"],
     "license": "MIT",
     "authors": [
         {
             "name": "Guillaume Bailleul",
             "email": "contact@guillaume-bailleul.fr",
             "homepage": "http://www.guillaume-bailleul.fr"
+        },
+        {
+            "name": "James Titcumb",
+            "email": "hello@jamestitcumb.com",
+            "homepage": "http://www.jamestitcumb.com/"
         }
     ],
     "require": {
-        "php": ">=5.3",
-        "symfony/framework-bundle": "2.*",
-        "symfony/symfony": "2.*"
+        "php": ">=5.3"
     },
     "autoload":     {
-        "psr-0": { "Grimfor\\OfxParserBundle": "" }
-    },
-    "target-dir": "Grimfor/OfxParserBundle"
+        "psr-0": { "Asgrim\\OfxParser": "" }
+    }
 }
