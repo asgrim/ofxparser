@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit>
+	<testsuites>
+		<testsuite name="asgrim/ofxparser">
+			<directory>./OfxParser/</directory>
+		</testsuite>
+	</testsuites>
+
+	<filter>
+		<whitelist>
+			<directory>../lib/</directory>
+		</whitelist>
+	</filter>
+</phpunit>
