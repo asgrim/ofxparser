@@ -74,6 +74,7 @@ class Parser
 	 */
 	private function xmlLoadString($xmlString)
 	{
+		libxml_clear_errors();
 		libxml_use_internal_errors(true);
 		$xml = simplexml_load_string($xmlString);
 
