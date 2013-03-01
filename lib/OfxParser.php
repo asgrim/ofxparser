@@ -1,11 +1,12 @@
 <?php
 
-namespace Grimfor\OfxParserBundle\Classes;
+namespace OfxParser;
 
 /**
  * An OFX parser library.
- * 
+ *
  * @author Guillaume BAILLEUL <contact@guillaume-bailleul.fr>
+ * @author James Titcumb <hello@jamestitcumb.com>
  */
 class OfxParser {
 
@@ -17,8 +18,8 @@ class OfxParser {
 
     private function fixTag($tag, $acceptSpaces = false) {
         $tag = strtoupper($tag);
-        $this->OFXContent = preg_replace('/<' . $tag . '>([\w0-9\.\-_\+\,' 
-                . (($acceptSpaces) ? ' ' : '') 
+        $this->OFXContent = preg_replace('/<' . $tag . '>([\w0-9\.\-_\+\,'
+                . (($acceptSpaces) ? ' ' : '')
                 . '])+/i', '$0</' . $tag . '>', $this->OFXContent);
     }
 
@@ -62,7 +63,7 @@ class OfxParser {
         $this->fixTag('BALAMT');
         $this->fixTag('LEDGERBAL');
         $this->fixTag('MEMO', true);
-        
+
         $xmlContent = "<?xml version='1.0'?> " . $this->OFXContent;
 
         $this->ofx = simplexml_load_string($xmlContent);
