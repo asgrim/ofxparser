@@ -120,10 +120,10 @@ class Parser
 		$xml = "";
 		foreach ($lines as $line)
 		{
-			$xml .= $this->closeUnclosedXmlTags($line) . "\n";
+			$xml .= trim($this->closeUnclosedXmlTags($line)) . "\n";
 		}
 
-		return $xml;
+		return trim($xml);
 	}
 
 	/**
