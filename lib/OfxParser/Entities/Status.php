@@ -12,13 +12,13 @@ class Status extends AbstractEntity
         '15501'   => 'Customer account already in use',
         '15502'   => 'USERPASS Lockout'
     );
-    public $Code;
-    public $Severity;
-    public $Message;
+    public $code;
+    public $severity;
+    public $message;
 
     public function codeDesc()
     {
-        return isset($this->codes[$this->Code]) ? $this->codes[$this->code] : '';
+        return isset($this->codes[$this->code]) ? $this->codes[$this->code] : '';
     }
 
 }

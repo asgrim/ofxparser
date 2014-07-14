@@ -2,13 +2,14 @@
 
 namespace OfxParser;
 
-use OfxParser\Entities\BankAccount,
-    OfxParser\Entities\Transaction,
+use OfxParser\Entities\AccountInfo,
+    OfxParser\Entities\BankAccount,
+    OfxParser\Entities\CreditAccount,
+    OfxParser\Entities\Institute,
+    OfxParser\Entities\SignOn,
     OfxParser\Entities\Statement,
     OfxParser\Entities\Status,
-    OfxParser\Entities\SignOn;
-
-
+    OfxParser\Entities\Transaction;
 
 /**
  * The OFX object
@@ -54,7 +55,7 @@ class Ofx
     private function buildSignOn($xml)
     {
         $SignOn = new SignOn();
-        $SignOn->status = build_status((doc/"STATUS"));
+        $SignOn->status = $xml->STATUS;
         $SignOn->date = $this->createDateTimeFromStr($xml->DTSERVER);
         $SignOn->language = $xml->LANGUAGE;
 

@@ -25,15 +25,15 @@ class Transaction extends AbstractEntity
         "OTHER"       => "Other"
     );
 
-	public $Type;
-	public $Date;
-	public $Amount;
-	public $UniqueId;
-	public $Name;
-	public $Memo;
+	public $type;
+	public $date;
+	public $amount;
+	public $uniqueId;
+	public $name;
+	public $memo;
 
     public function TypeDescription()
     {
-        return isset($this->types[$this->Type]) ? $this->types[$this->Type] : '';
+        return isset($this->types[$this->type]) ? $this->types[$this->type] : '';
     }
 }
