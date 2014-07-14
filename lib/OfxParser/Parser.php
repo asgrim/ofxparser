@@ -9,25 +9,23 @@ namespace OfxParser;
  *
  * @author Guillaume BAILLEUL <contact@guillaume-bailleul.fr>
  * @author James Titcumb <hello@jamestitcumb.com>
+ * @author Oliver Lowe <mrtriangle@gmail.com>
  */
 class Parser
 {
-	/**
-	 * @var array of TransactionEntity objects
-	 */
-	private $transactions;
 
 	/**
 	 * Load an OFX file into this parser by way of a filename
 	 *
 	 * @param string $ofxFile A path that can be loaded with file_get_contents
+	 * @return  Ofx
 	 * @throws \InvalidArgumentException
 	 */
 	public function loadFromFile($ofxFile)
 	{
 		if (file_exists($ofxFile))
 		{
-			$this->loadFromString(file_get_contents($ofxFile));
+			return $this->loadFromString(file_get_contents($ofxFile));
 		}
 		else
 		{
@@ -39,6 +37,7 @@ class Parser
 	 * Load an OFX by directly using the text content
 	 *
 	 * @param string $ofxContent
+	 * @return  Ofx
 	 * @throws \Exception
 	 */
 	public function loadFromString($ofxContent)
@@ -51,54 +50,7 @@ class Parser
 
 		$xml = $this->xmlLoadString($ofxXml);
 
-		foreach ($xml->BANKMSGSRSV1->STMTTRNRS->STMTRS->BANKTRANLIST->STMTTRN as $xmlTx)
-		{
-			$transaction = new TransactionEntity();
-			$transaction->Amount = (float)$xmlTx->TRNAMT;
-			$transaction->TransactionType = (string)$xmlTx->TRNTYPE;
-			$transaction->Date = $this->createDateTimeFromStr($xmlTx->DTPOSTED);
-			$transaction->UniqueId = (string)$xmlTx->FITID;
-			$transaction->Name = (string)$xmlTx->NAME;
-			$transaction->Memo = (string)$xmlTx->MEMO;
-
-			$this->transactions[] = $transaction;
-		}
-	}
-
-	/**
-	 * Create a DateTime object from a valid OFX date format
-	 *
-	 * Supports:
-	 * YYYYMMDDHHMMSS.XXX[gmt offset:tz name]
-	 * YYYYMMDDHHMMSS.XXX
-	 * YYYYMMDDHHMMSS
-	 * YYYYMMDD
-	 *
-	 * @param  string $dateString
-	 * @return \DateTime | $dateString
-	 */
-	private function createDateTimeFromStr($dateString)
-	{
-		$regex = "/"
-				."(\d{4})(\d{2})(\d{2})?" 		// YYYMMDD				1,2,3
-				."(?:(\d{2})(\d{2})(\d{2}))?"	// HHMMSS	- optional 	4,5,6
-				."(?:\.(\d{3}))?"				// .XXX		- optional 	7
-				."(?:\[(-?\d+)\:(\w{3}\]))?"	// [-n:TZ]	- optional 	8,9
-				."/";
-
-		if (preg_match($regex, $dateString, $matches))
-		{
-			$year = (int) $matches[1];
-			$month = (int) $matches[2];
-			$day = (int) $matches[3];
-			$hour = isset($matches[4]) ? $matches[4] : 0;
-			$min = isset($matches[5]) ? $matches[5] : 0;
-			$sec = isset($matches[6]) ? $matches[6] : 0;
-
-			$format = $year.'-'.$month.'-'.$day.' '.$hour.':'.$min.':'.$sec;
-			return new \DateTime($format);
-		}
-		return $dateString;
+		return new Ofx($xml);
 	}
 
 	/**
@@ -133,7 +85,7 @@ class Parser
 		// Matches: <SOMETHING>blah
 		// Does not match: <SOMETHING>
 		// Does not match: <SOMETHING>blah</SOMETHING>
-		if (preg_match("/<([A-Za-z0-9.]+)>([\w0-9\.\-\_\+\, :;\[\]\\\+\*\?\^\$\(\)\{\}\=\!\|\&@€£#%§±~`]+)$/", trim($line), $matches))
+		if (preg_match("/<([A-Za-z0-9.]+)>([\w0-9\.\-\_\+\, ;:\[\]\'\&\/\\\*\(\)\+\{\}\!\£\$\?=@€£#%±§~`]+)$/", trim($line), $matches))
 		{
 			return "<{$matches[1]}>{$matches[2]}</{$matches[1]}>";
 		}
@@ -160,15 +112,5 @@ class Parser
 		}
 
 		return trim($xml);
-	}
-
-	/**
-	 * Get the transactions that have been processed
-	 *
-	 * @return array
-	 */
-	public function getTransactions()
-	{
-		return $this->transactions;
 	}
 }
