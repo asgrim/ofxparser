@@ -98,7 +98,7 @@ class Parser
 			$format = $year.'-'.$month.'-'.$day.' '.$hour.':'.$min.':'.$sec;
 			return new \DateTime($format);
 		}
-		return $dateString;
+		throw new \Exception("Failed to initialize DateTime for string: " . $dateString);
 	}
 
 	/**
@@ -133,7 +133,7 @@ class Parser
 		// Matches: <SOMETHING>blah
 		// Does not match: <SOMETHING>
 		// Does not match: <SOMETHING>blah</SOMETHING>
-		if (preg_match("/<([A-Za-z0-9.]+)>([\w0-9\.\-\_\+\, :;\[\]\\\+\*\?\^\$\(\)\{\}\=\!\|\&@€£#%§±~`]+)$/", trim($line), $matches))
+		if (preg_match("/<([A-Za-z0-9.]+)>([\w0-9\.\-\_\+\, ;:\[\]\'\&\/\\\*\(\)\+\{\}\!\£\$\?=@€£#%±§~`]+)$/", trim($line), $matches))
 		{
 			return "<{$matches[1]}>{$matches[2]}</{$matches[1]}>";
 		}
