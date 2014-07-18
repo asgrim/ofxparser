@@ -31,9 +31,18 @@ class Transaction extends AbstractEntity
 	public $uniqueId;
 	public $name;
 	public $memo;
+    public $sic;
+    public $checkNumber;
 
-    public function TypeDescription()
+    /**
+     * Get the associated type description
+     *
+     * @return string
+     */
+    public function typeDesc()
     {
-        return isset($this->types[$this->type]) ? $this->types[$this->type] : '';
+        // Cast SimpleXMLObject to string
+        $type = (string) $this->type;
+        return isset($this->types[$type]) ? $this->types[$type] : '';
     }
 }

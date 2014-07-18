@@ -2,14 +2,14 @@
 
 namespace OfxParser;
 
-use OfxParser\Entities\AccountInfo,
-    OfxParser\Entities\BankAccount,
-    OfxParser\Entities\CreditAccount,
-    OfxParser\Entities\Institute,
-    OfxParser\Entities\SignOn,
-    OfxParser\Entities\Statement,
-    OfxParser\Entities\Status,
-    OfxParser\Entities\Transaction;
+use SimpleXMLElement;
+use OfxParser\Entities\AccountInfo;
+use OfxParser\Entities\BankAccount;
+use OfxParser\Entities\Institute;
+use OfxParser\Entities\SignOn;
+use OfxParser\Entities\Statement;
+use OfxParser\Entities\Status;
+use OfxParser\Entities\Transaction;
 
 /**
  * The OFX object
@@ -30,16 +30,22 @@ class Ofx
     public $Header;
     public $SignOn;
     public $SignupAccountInfo;
+    public $BankAccounts = [];
     public $BankAccount;
-    public $CreditCard;
     public $Investment;
 
-    public function __construct($xml)
+    /**
+     * @param SimpleXMLElement $xml
+     */
+    public function __construct(SimpleXMLElement $xml)
     {
         $this->SignOn = $this->buildSignOn($xml->SIGNONMSGSRSV1->SONRS);
         $this->SignupAccountInfo = $this->buildAccountInfo($xml->SIGNUPMSGSRSV1->ACCTINFOTRNRS);
-        $this->BankAccount = $this->buildBankAccount($xml->BANKMSGSRSV1->STMTTRNRS);
-        $this->CreditCard = $this->buildCreditCard($xml->CREDITCARDMSGSRSV1->CCSTMTTRNRS);
+        $this->BankAccounts = $this->buildBankAccounts($xml);
+        // Set a helper if only one bank account
+        if (count($this->BankAccounts) == 1) {
+            $this->BankAccount = $this->BankAccounts[0];
+        }
     }
 
     /**
@@ -52,35 +58,69 @@ class Ofx
         return $this->BankAccount->Statement->Transactions;
     }
 
+    /**
+     * @param $xml
+     * @return SignOn
+     */
     private function buildSignOn($xml)
     {
         $SignOn = new SignOn();
-        $SignOn->status = $xml->STATUS;
+        $SignOn->Status = $this->buildStatus($xml->STATUS);
         $SignOn->date = $this->createDateTimeFromStr($xml->DTSERVER);
         $SignOn->language = $xml->LANGUAGE;
 
         $SignOn->Institute = new Institute();
         $SignOn->Institute->name = $xml->FI->ORG;
         $SignOn->Institute->id = $xml->FI->FID;
+
         return $SignOn;
     }
 
+    /**
+     * @param $xml
+     * @return array AccountInfo
+     */
     private function buildAccountInfo($xml)
     {
-        foreach( $xml->ACCTINFO as $account ) {
+        if (!isset($xml->ACCTINFO)) return [];
+
+        $accounts = [];
+        foreach ($xml->ACCTINFO as $account) {
             $AccountInfo = new AccountInfo();
             $AccountInfo->desc = $account->DESC;
             $AccountInfo->number = $account->ACCTID;
+            $accounts[] = $AccountInfo;
         }
+
+        return $accounts;
     }
 
+    /**
+     * @param SimpleXMLElement $xml
+     * @return array
+     */
+    private function buildBankAccounts(SimpleXMLElement $xml)
+    {
+        // Loop through the bank accounts
+        $bankAccounts = [];
+        foreach ($xml->BANKMSGSRSV1->STMTTRNRS as $accountStatement) {
+            $bankAccounts[] = $this->buildBankAccount($accountStatement);
+        }
+        return $bankAccounts;
+    }
+
+    /**
+     * @param $xml
+     * @return BankAccount
+     * @throws \Exception
+     */
     private function buildBankAccount($xml)
     {
         $Bank = new BankAccount();
         $Bank->transactionUid = $xml->TRNUID;
         $Bank->accountNumber = $xml->STMTRS->BANKACCTFROM->ACCTID;
         $Bank->routingNumber = $xml->STMTRS->BANKACCTFROM->BANKID;
-        $Bank->type = $xml->STMTRS->BANKACCTFROM->ACCTTYPE;
+        $Bank->accountType = $xml->STMTRS->BANKACCTFROM->ACCTTYPE;
         $Bank->balance = $xml->STMTRS->LEDGERBAL->BALAMT;
         $Bank->balanceDate = $this->createDateTimeFromStr($xml->STMTRS->LEDGERBAL->DTASOF);
 
@@ -95,31 +135,32 @@ class Ofx
 
     private function buildTransactions($transactions)
     {
-        $return = array();
-        foreach( $transactions as $t ) {
+        $return = [];
+        foreach ($transactions as $t) {
             $Transaction = new Transaction();
-            $Transaction->type = (string) $t->TRNTYPE;
+            $Transaction->type = (string)$t->TRNTYPE;
             $Transaction->date = $this->createDateTimeFromStr($t->DTPOSTED);
-            $Transaction->amount = (float) $t->TRNAMT;
-            $Transaction->fitId = (int) $t->FITID;
-            $Transaction->payee = (string) $t->NAME;
-            $Transaction->memo = (string) $t->MEMO;
+            $Transaction->amount = (float)$t->TRNAMT;
+            $Transaction->uniqueId = (int)$t->FITID;
+            $Transaction->name = (string)$t->NAME;
+            $Transaction->memo = (string)$t->MEMO;
             $Transaction->sic = $t->SIC;
-            $Transaction->checkNumber = $Transaction->Type=="CHECK" ? $t->CHECKNUM : "";
+            $Transaction->checkNumber = $t->CHECKNUM;
             $return[] = $Transaction;
         }
+
         return $return;
     }
 
     private function buildStatus($xml)
     {
-      $Status = new Status();
-      $Status->code = $xml->CODE;
-      $Status->severity = $xml->SEVERITY;
-      $Status->message = $xml->MESSAGE;
-      return $Status;
-    }
+        $Status = new Status();
+        $Status->code = $xml->CODE;
+        $Status->severity = $xml->SEVERITY;
+        $Status->message = $xml->MESSAGE;
 
+        return $Status;
+    }
 
     /**
      * Create a DateTime object from a valid OFX date format
@@ -136,24 +177,25 @@ class Ofx
     private function createDateTimeFromStr($dateString)
     {
         $regex = "/"
-                ."(\d{4})(\d{2})(\d{2})?"       // YYYYMMDD             1,2,3
-                ."(?:(\d{2})(\d{2})(\d{2}))?"   // HHMMSS   - optional  4,5,6
-                ."(?:\.(\d{3}))?"               // .XXX     - optional  7
-                ."(?:\[(-?\d+)\:(\w{3}\]))?"    // [-n:TZ]  - optional  8,9
-                ."/";
+            . "(\d{4})(\d{2})(\d{2})?" // YYYYMMDD             1,2,3
+            . "(?:(\d{2})(\d{2})(\d{2}))?" // HHMMSS   - optional  4,5,6
+            . "(?:\.(\d{3}))?" // .XXX     - optional  7
+            . "(?:\[(-?\d+)\:(\w{3}\]))?" // [-n:TZ]  - optional  8,9
+            . "/";
 
-        if (preg_match($regex, $dateString, $matches))
-        {
-            $year = (int) $matches[1];
-            $month = (int) $matches[2];
-            $day = (int) $matches[3];
+        if (preg_match($regex, $dateString, $matches)) {
+            $year = (int)$matches[1];
+            $month = (int)$matches[2];
+            $day = (int)$matches[3];
             $hour = isset($matches[4]) ? $matches[4] : 0;
             $min = isset($matches[5]) ? $matches[5] : 0;
             $sec = isset($matches[6]) ? $matches[6] : 0;
 
-            $format = $year.'-'.$month.'-'.$day.' '.$hour.':'.$min.':'.$sec;
+            $format = $year . '-' . $month . '-' . $day . ' ' . $hour . ':' . $min . ':' . $sec;
+
             return new \DateTime($format);
         }
-        return $dateString;
+        throw new \Exception("Failed to initialize DateTime for string: " . $dateString);
     }
+
 }

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="US-ASCII"?>
+<?OFX OFXHEADER="200" VERSION="200" SECURITY="NONE" OLDFILEUID="NONE" NEWFILEUID="NONE"?>
+<OFX>
+    <SIGNONMSGSRSV1>
+        <SONRS>
+            <STATUS>
+                <CODE>0</CODE>
+                <SEVERITY>INFO</SEVERITY>
+            </STATUS>
+            <DTSERVER>20071015021529.000[-8:PST]</DTSERVER>
+            <LANGUAGE>ENG</LANGUAGE>
+            <DTACCTUP>19900101000000</DTACCTUP>
+            <FI>
+                <ORG>MYBANK</ORG>
+                <FID>01234</FID>
+            </FI>
+        </SONRS>
+    </SIGNONMSGSRSV1>
+    <BANKMSGSRSV1>
+        <STMTTRNRS>
+            <TRNUID>23382938</TRNUID>
+            <STATUS>
+                <CODE>0</CODE>
+                <SEVERITY>INFO</SEVERITY>
+            </STATUS>
+            <STMTRS>
+                <CURDEF>USD</CURDEF>
+                <BANKACCTFROM>
+                    <BANKID>987654321</BANKID>
+                    <ACCTID>098-121</ACCTID>
+                    <ACCTTYPE>SAVINGS</ACCTTYPE>
+                </BANKACCTFROM>
+                <BANKTRANLIST>
+                    <DTSTART>20070101</DTSTART>
+                    <DTEND>20071015</DTEND>
+                    <STMTTRN>
+                        <TRNTYPE>CREDIT</TRNTYPE>
+                        <DTPOSTED>20070315</DTPOSTED>
+                        <DTUSER>20070315</DTUSER>
+                        <TRNAMT>200.00</TRNAMT>
+                        <FITID>980315001</FITID>
+                        <NAME>DEPOSIT</NAME>
+                        <MEMO>automatic deposit</MEMO>
+                    </STMTTRN>
+                    <STMTTRN>
+                        <TRNTYPE>CREDIT</TRNTYPE>
+                        <DTPOSTED>20070329</DTPOSTED>
+                        <DTUSER>20070329</DTUSER>
+                        <TRNAMT>150.00</TRNAMT>
+                        <FITID>980310001</FITID>
+                        <NAME>TRANSFER</NAME>
+                        <MEMO>Transfer from checking</MEMO>
+                    </STMTTRN>
+                    <STMTTRN>
+                        <TRNTYPE>CHECK</TRNTYPE>
+                        <DTPOSTED>20070709</DTPOSTED>
+                        <DTUSER>20070709</DTUSER>
+                        <TRNAMT>-100.00</TRNAMT>
+                        <FITID>980309001</FITID>
+                        <CHECKNUM>1025</CHECKNUM>
+                        <NAME>Cheque</NAME>
+                    </STMTTRN>
+                </BANKTRANLIST>
+                <LEDGERBAL>
+                    <BALAMT>5250.00</BALAMT>
+                    <DTASOF>20071015021529.000[-8:PST]</DTASOF>
+                </LEDGERBAL>
+                <AVAILBAL>
+                    <BALAMT>5250.00</BALAMT>
+                    <DTASOF>20071015021529.000[-8:PST]</DTASOF>
+                </AVAILBAL>
+            </STMTRS>
+        </STMTTRNRS>
+    </BANKMSGSRSV1>
+</OFX>
+
