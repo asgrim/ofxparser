@@ -2,8 +2,10 @@
 
 namespace OfxParser;
 
-require_once "../lib/OfxParser/Parser.php";
-require_once "../lib/OfxParser/TransactionEntity.php";
+require_once "../vendor/autoload.php";
+
+// require_once "../lib/OfxParser/Parser.php";
+// require_once "../lib/OfxParser/TransactionEntity.php";
 
 class ParserTest extends \PHPUnit_Framework_TestCase
 {
@@ -79,17 +81,6 @@ HERE;
 		$this->assertEquals($expected, $method->invoke(new Parser, $sgml));
 	}
 
-	public function testGetTransactions()
-	{
-		$prop = new \ReflectionProperty('\OfxParser\Parser', 'transactions');
-		$prop->setAccessible(true);
-
-		$parser = new Parser();
-		$prop->setValue($parser, 'test');
-
-		$this->assertEquals('test', $parser->getTransactions());
-	}
-
 	public function testLoadFromFileWhenFileDoesNotExist()
 	{
 		$this->setExpectedException('\InvalidArgumentException');
@@ -123,30 +114,4 @@ HERE;
 		$parser->loadFromString($content);
 	}
 
-	public function testCreateDateTimeFromOFXDateFormats()
-	{
-		// October 5, 2008, at 1:22 and 124 milliseconds pm, Easter Standard Time
-		$expectedDateTime = new \DateTime('2008-10-05 13:22:00');
-
-		$method = new \ReflectionMethod('\OfxParser\Parser', 'createDateTimeFromStr');
-		$method->setAccessible(true);
-
-		$parser = new Parser();
-
-		// Test OFX Date Format YYYYMMDDHHMMSS.XXX[gmt offset:tz name]
-		$DateTimeOne = $method->invoke($parser, '20081005132200.124[-5:EST]');
-		$this->assertEquals($expectedDateTime->getTimestamp(), $DateTimeOne->getTimestamp());
-
-		// Test YYYYMMDD
-		$DateTimeTwo = $method->invoke($parser, '20081005');
-        $this->assertEquals($expectedDateTime->format('Y-m-d'), $DateTimeTwo->format('Y-m-d'));
-
-        // Test YYYYMMDDHHMMSS
-        $DateTimeThree = $method->invoke($parser, '20081005132200');
-        $this->assertEquals($expectedDateTime->getTimestamp(), $DateTimeThree->getTimestamp());
-
-        // Test YYYYMMDDHHMMSS.XXX
-        $DateTimeFour = $method->invoke($parser, '20081005132200.124');
-		$this->assertEquals($expectedDateTime->getTimestamp(), $DateTimeFour->getTimestamp());
-	}
 }

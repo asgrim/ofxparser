@@ -9,25 +9,23 @@ namespace OfxParser;
  *
  * @author Guillaume BAILLEUL <contact@guillaume-bailleul.fr>
  * @author James Titcumb <hello@jamestitcumb.com>
+ * @author Oliver Lowe <mrtriangle@gmail.com>
  */
 class Parser
 {
-	/**
-	 * @var array of TransactionEntity objects
-	 */
-	private $transactions;
 
 	/**
 	 * Load an OFX file into this parser by way of a filename
 	 *
 	 * @param string $ofxFile A path that can be loaded with file_get_contents
+	 * @return  Ofx
 	 * @throws \InvalidArgumentException
 	 */
 	public function loadFromFile($ofxFile)
 	{
 		if (file_exists($ofxFile))
 		{
-			$this->loadFromString(file_get_contents($ofxFile));
+			return $this->loadFromString(file_get_contents($ofxFile));
 		}
 		else
 		{
@@ -39,6 +37,7 @@ class Parser
 	 * Load an OFX by directly using the text content
 	 *
 	 * @param string $ofxContent
+	 * @return  Ofx
 	 * @throws \Exception
 	 */
 	public function loadFromString($ofxContent)
@@ -160,15 +159,5 @@ class Parser
 		}
 
 		return trim($xml);
-	}
-
-	/**
-	 * Get the transactions that have been processed
-	 *
-	 * @return array
-	 */
-	public function getTransactions()
-	{
-		return $this->transactions;
 	}
 }
