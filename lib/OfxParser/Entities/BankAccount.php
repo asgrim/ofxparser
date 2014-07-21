@@ -2,16 +2,13 @@
 
 namespace OfxParser\Entities;
 
-class BankAccount extends Account
+class BankAccount extends AbstractEntity
 {
-    protected $types = array(
-        'CHECKING',
-        'SAVINGS',
-        'MONEYMRKT',
-        'CREDITLINE'
-    );
-
+    public $accountNumber;
     public $accountType;
     public $balance;
     public $balanceDate;
+    public $routingNumber;
+    public $statement;
+    public $transactionUid;
 }

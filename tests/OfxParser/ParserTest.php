@@ -2,13 +2,17 @@
 
 namespace OfxParser;
 
-require_once "../vendor/autoload.php";
-
-// require_once "../lib/OfxParser/Parser.php";
-// require_once "../lib/OfxParser/TransactionEntity.php";
+require_once __DIR__ . '/../../vendor/autoload.php';
 
 class ParserTest extends \PHPUnit_Framework_TestCase
 {
+    protected $ofxdata;
+
+    public function setUp()
+    {
+        $this->ofxdata = 'fixtures/ofxdata.ofx';
+    }
+
 	public function testXmlLoadStringThrowsExceptionWithInvalidXml()
 	{
 		$invalidXml = '<invalid xml>';
@@ -91,24 +95,24 @@ HERE;
 
 	public function testLoadFromFileWhenFileDoesExist()
 	{
-		if (!file_exists('ofxdata.ofx'))
+		if (!file_exists($this->ofxdata))
 		{
 			$this->markTestSkipped('Could not find data file, cannot test loadFromFile method fully');
 		}
 
-		$parser = $this->getMock('\OfxParser\Parser', array('loadFromString'));
+		$parser = $this->getMock('\OfxParser\Parser', ['loadFromString']);
 		$parser->expects($this->once())->method('loadFromString');
-		$parser->loadFromFile('ofxdata.ofx');
+		$parser->loadFromFile($this->ofxdata);
 	}
 
 	public function testLoadFromString()
 	{
-		if (!file_exists('ofxdata.ofx'))
+		if (!file_exists($this->ofxdata))
 		{
 			$this->markTestSkipped('Could not find data file, cannot test loadFromString method fully');
 		}
 
-		$content = file_get_contents('ofxdata.ofx');
+		$content = file_get_contents($this->ofxdata);
 
 		$parser = new Parser();
 		$parser->loadFromString($content);

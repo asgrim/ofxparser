@@ -4,6 +4,6 @@ namespace OfxParser\Entities;
 
 class AccountInfo extends AbstractEntity
 {
-    public $Desc;
-    public $Number;
+    public $desc;
+    public $number;
 }

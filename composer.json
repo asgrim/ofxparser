@@ -14,10 +14,14 @@
             "name": "James Titcumb",
             "email": "hello@jamestitcumb.com",
             "homepage": "http://www.jamestitcumb.com/"
+        },
+        {
+            "name": "Oliver Lowe",
+            "email": "mrtriangle@gmail.com"
         }
     ],
     "require": {
-        "php": ">=5.3"
+        "php": ">=5.4"
     },
     "autoload":     {
         "psr-0": { "OfxParser": "lib/" }
