@@ -66,7 +66,7 @@ class Ofx
     {
         $SignOn = new SignOn();
         $SignOn->Status = $this->buildStatus($xml->STATUS);
-        $SignOn->date = $this->createDateTimeFromStr($xml->DTSERVER);
+        $SignOn->date = $this->createDateTimeFromStr($xml->DTSERVER, true);
         $SignOn->language = $xml->LANGUAGE;
 
         $SignOn->Institute = new Institute();
@@ -122,7 +122,7 @@ class Ofx
         $Bank->routingNumber = $xml->STMTRS->BANKACCTFROM->BANKID;
         $Bank->accountType = $xml->STMTRS->BANKACCTFROM->ACCTTYPE;
         $Bank->balance = $xml->STMTRS->LEDGERBAL->BALAMT;
-        $Bank->balanceDate = $this->createDateTimeFromStr($xml->STMTRS->LEDGERBAL->DTASOF);
+        $Bank->balanceDate = $this->createDateTimeFromStr($xml->STMTRS->LEDGERBAL->DTASOF, true);
 
         $Bank->Statement = new Statement();
         $Bank->Statement->currency = $xml->STMTRS->CURDEF;
@@ -171,10 +171,11 @@ class Ofx
      * YYYYMMDDHHMMSS
      * YYYYMMDD
      *
-     * @param  string $dateString
+     * @param  string  $dateString
+     * @param  boolean $ignoreErrors
      * @return \DateTime | $dateString
      */
-    private function createDateTimeFromStr($dateString)
+    private function createDateTimeFromStr($dateString, $ignoreErrors = false)
     {
         $regex = "/"
             . "(\d{4})(\d{2})(\d{2})?" // YYYYMMDD             1,2,3
@@ -193,8 +194,19 @@ class Ofx
 
             $format = $year . '-' . $month . '-' . $day . ' ' . $hour . ':' . $min . ':' . $sec;
 
-            return new \DateTime($format);
+            try {
+                return new \DateTime($format);
+
+            } catch (\Exception $e) {
+
+                if ($ignoreErrors) {
+                    return null;
+                }
+
+                throw $e;
+            }
         }
+
         throw new \Exception("Failed to initialize DateTime for string: " . $dateString);
     }
 
