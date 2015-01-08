@@ -140,7 +140,7 @@ class Ofx
             $Transaction = new Transaction();
             $Transaction->type = (string)$t->TRNTYPE;
             $Transaction->date = $this->createDateTimeFromStr($t->DTPOSTED);
-            $Transaction->amount = (float)$t->TRNAMT;
+            $Transaction->amount = $this->createAmountFromStr($t->TRNAMT);
             $Transaction->uniqueId = (int)$t->FITID;
             $Transaction->name = (string)$t->NAME;
             $Transaction->memo = (string)$t->MEMO;
@@ -208,6 +208,45 @@ class Ofx
         }
 
         throw new \Exception("Failed to initialize DateTime for string: " . $dateString);
+    }
+
+    /**
+     * Create a formated number in Float according to different locale options
+     *
+     * Supports:
+     * 000,00 and -000,00
+     * 0.000,00 and -0.000,00
+     * 0,000.00 and -0,000.00
+     * 000.00 and 000.00
+     *
+     * @param  string  $amountString
+     * @return \Float | $amountString
+     */
+    private function createAmountFromStr($amountString)
+    {
+        //000.00 or 0,000.00
+        if (preg_match("/^-?([0-9,]+)(\.?)([0-9]{2})$/", $amountString) == 1) {
+            $amountString = preg_replace(
+                array("/([,]+)/",
+                    "/\.?([0-9]{2})$/"
+                    ),
+                array("",
+                    ".$1"),
+                $amountString);
+        }
+
+        //000,00 or 0.000,00
+        elseif (preg_match("/^-?([0-9\.]+,?[0-9]{2})$/", $amountString) == 1) {
+            $amountString = preg_replace(
+                array("/([\.]+)/",
+                    "/,?([0-9]{2})$/"
+                    ),
+                array("",
+                    ".$1"),
+                $amountString);
+        }
+
+        return (float)$amountString;
     }
 
 }
