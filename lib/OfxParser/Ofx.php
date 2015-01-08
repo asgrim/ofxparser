@@ -220,7 +220,7 @@ class Ofx
      * 000.00 and 000.00
      *
      * @param  string  $amountString
-     * @return \Float | $amountString
+     * @return float
      */
     private function createAmountFromStr($amountString)
     {
