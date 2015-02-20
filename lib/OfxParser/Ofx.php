@@ -142,7 +142,7 @@ class Ofx
             $Transaction->type = (string)$t->TRNTYPE;
             $Transaction->date = $this->createDateTimeFromStr($t->DTPOSTED);
             $Transaction->amount = $this->createAmountFromStr($t->TRNAMT);
-            $Transaction->uniqueId = (int)$t->FITID;
+            $Transaction->uniqueId = (string)$t->FITID;
             $Transaction->name = (string)$t->NAME;
             $Transaction->memo = (string)$t->MEMO;
             $Transaction->sic = $t->SIC;
