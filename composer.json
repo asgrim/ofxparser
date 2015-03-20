@@ -1,12 +1,22 @@
 {
-    "name": "diegoricardo/ofxparser",
+    "name": "asgrim/ofxparser",
     "description": "Simple OFX file parser",
     "keywords": ["ofx","open financial exchange","finance","parser"],
     "license": "MIT",
     "authors": [
         {
-            "name": "Diego Ricardo",
-            "email": "diego.r.araujo@gmail.com"
+            "name": "Guillaume Bailleul",
+            "email": "contact@guillaume-bailleul.fr",
+            "homepage": "http://www.guillaume-bailleul.fr"
+        },
+        {
+            "name": "James Titcumb",
+            "email": "hello@jamestitcumb.com",
+            "homepage": "http://www.jamestitcumb.com/"
+        },
+        {
+            "name": "Oliver Lowe",
+            "email": "mrtriangle@gmail.com"
         }
     ],
     "require": {
