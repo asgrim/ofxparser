@@ -6,8 +6,8 @@
     "authors": [
         {
             "name": "Diego Ricardo",
-            "email": "diego.r.araujo@gmail.com",
-        },
+            "email": "diego.r.araujo@gmail.com"
+        }
     ],
     "require": {
         "php": ">=5.4"
