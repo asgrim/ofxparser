@@ -41,7 +41,17 @@ class Ofx
     {
         $this->SignOn = $this->buildSignOn($xml->SIGNONMSGSRSV1->SONRS);
         $this->SignupAccountInfo = $this->buildAccountInfo($xml->SIGNUPMSGSRSV1->ACCTINFOTRNRS);
-        $this->BankAccounts = $this->buildBankAccounts($xml);
+
+        if(isset($xml->BANKMSGSRSV1)) {
+
+            $this->BankAccounts = $this->buildBankAccounts($xml);
+
+        } else if(isset($xml->CREDITCARDMSGSRSV1)) {
+
+            $this->BankAccounts = $this->buildCreditAccounts($xml);
+        }
+
+
         // Set a helper if only one bank account
         if (count($this->BankAccounts) == 1) {
             $this->BankAccount = $this->BankAccounts[0];
@@ -99,6 +109,22 @@ class Ofx
      * @param SimpleXMLElement $xml
      * @return array
      */
+    private function buildCreditAccounts(SimpleXMLElement $xml)
+    {
+        // Loop through the bank accounts
+        $bankAccounts = [];
+
+        foreach ($xml->CREDITCARDMSGSRSV1->CCSTMTTRNRS as $accountStatement) {
+
+            $bankAccounts[] = $this->buildCreditAccount($accountStatement);
+        }
+        return $bankAccounts;
+    }
+
+    /**
+     * @param SimpleXMLElement $xml
+     * @return array
+     */
     private function buildBankAccounts(SimpleXMLElement $xml)
     {
         // Loop through the bank accounts
@@ -130,6 +156,31 @@ class Ofx
         $Bank->Statement->startDate = $this->createDateTimeFromStr($xml->STMTRS->BANKTRANLIST->DTSTART);
         $Bank->Statement->endDate = $this->createDateTimeFromStr($xml->STMTRS->BANKTRANLIST->DTEND);
         $Bank->Statement->transactions = $this->buildTransactions($xml->STMTRS->BANKTRANLIST->STMTTRN);
+
+        return $Bank;
+    }
+
+    /**
+     * @param $xml
+     * @return BankAccount
+     * @throws \Exception
+     */
+    private function buildCreditAccount($xml)
+    {
+        $Bank = new BankAccount();
+        $Bank->transactionUid = $xml->TRNUID;
+        $Bank->agencyNumber = $xml->CCSTMTRS->BANKACCTFROM->BRANCHID;
+        $Bank->accountNumber = $xml->CCSTMTRS->BANKACCTFROM->ACCTID;
+        $Bank->routingNumber = $xml->CCSTMTRS->BANKACCTFROM->BANKID;
+        $Bank->accountType = $xml->CCSTMTRS->BANKACCTFROM->ACCTTYPE;
+        $Bank->balance = $xml->CCSTMTRS->LEDGERBAL->BALAMT;
+        $Bank->balanceDate = $this->createDateTimeFromStr($xml->CCSTMTRS->LEDGERBAL->DTASOF, true);
+
+        $Bank->Statement = new Statement();
+        $Bank->Statement->currency = $xml->CCSTMTRS->CURDEF;
+        $Bank->Statement->startDate = $this->createDateTimeFromStr($xml->CCSTMTRS->BANKTRANLIST->DTSTART);
+        $Bank->Statement->endDate = $this->createDateTimeFromStr($xml->CCSTMTRS->BANKTRANLIST->DTEND);
+        $Bank->Statement->transactions = $this->buildTransactions($xml->CCSTMTRS->BANKTRANLIST->STMTTRN);
 
         return $Bank;
     }
