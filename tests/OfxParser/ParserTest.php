@@ -6,13 +6,6 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 
 class ParserTest extends \PHPUnit_Framework_TestCase
 {
-    protected $ofxdata;
-
-    public function setUp()
-    {
-        $this->ofxdata = 'fixtures/ofxdata.ofx';
-    }
-
 	public function testXmlLoadStringThrowsExceptionWithInvalidXml()
 	{
 		$invalidXml = '<invalid xml>';
@@ -93,29 +86,48 @@ HERE;
 		$parser->loadFromFile('a non-existent file');
 	}
 
-	public function testLoadFromFileWhenFileDoesExist()
+    /**
+     * @dataProvider testLoadFromStringProvider
+     */
+	public function testLoadFromFileWhenFileDoesExist($filename)
 	{
-		if (!file_exists($this->ofxdata))
+		if (!file_exists($filename))
 		{
 			$this->markTestSkipped('Could not find data file, cannot test loadFromFile method fully');
 		}
 
 		$parser = $this->getMock('\OfxParser\Parser', ['loadFromString']);
 		$parser->expects($this->once())->method('loadFromString');
-		$parser->loadFromFile($this->ofxdata);
+		$parser->loadFromFile($filename);
 	}
 
-	public function testLoadFromString()
+    /**
+     * @return array
+     */
+	public function testLoadFromStringProvider()
+    {
+        return [
+            [dirname(__DIR__).'/fixtures/ofxdata.ofx'],
+            [dirname(__DIR__).'/fixtures/ofxdata-oneline.ofx'],
+            [dirname(__DIR__).'/fixtures/ofxdata-cmfr.ofx'],
+            [dirname(__DIR__).'/fixtures/ofxdata-bpbfc.ofx'],
+        ];
+    }
+
+    /**
+     * @param $filename
+     * @dataProvider testLoadFromStringProvider
+     */
+	public function testLoadFromString($filename)
 	{
-		if (!file_exists($this->ofxdata))
+		if (!file_exists($filename))
 		{
 			$this->markTestSkipped('Could not find data file, cannot test loadFromString method fully');
 		}
 
-		$content = file_get_contents($this->ofxdata);
+		$content = file_get_contents($filename);
 
 		$parser = new Parser();
 		$parser->loadFromString($content);
 	}
-
 }

@@ -10,7 +10,7 @@ class OfxTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $ofxFile = 'fixtures/ofxdata-xml.ofx';
+        $ofxFile = dirname(__DIR__).'/fixtures/ofxdata-xml.ofx';
 
         if (!file_exists($ofxFile))
         {
@@ -21,7 +21,7 @@ class OfxTest extends \PHPUnit_Framework_TestCase
 
     public function testAcceptOnlySimpleXMLElement()
     {
-        $this->setExpectedException('\Exception');
+        $this->setExpectedException('\TypeError');
         new Ofx('This is not an SimpleXMLObject');
     }
 
@@ -68,7 +68,7 @@ class OfxTest extends \PHPUnit_Framework_TestCase
 
     public function testBuildsMultipleBankAccounts()
     {
-        $multiOfxFile = 'fixtures/ofx-multiple-accounts-xml.ofx';
+        $multiOfxFile = dirname(__DIR__).'/fixtures/ofx-multiple-accounts-xml.ofx';
         if (!file_exists($multiOfxFile))
         {
             $this->markTestSkipped('Could not find multiple account data file, cannot fully test Multiple Bank Accounts');
