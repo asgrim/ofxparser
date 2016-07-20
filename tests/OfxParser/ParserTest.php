@@ -43,35 +43,77 @@ class ParserTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('bar', (string)$xml->foo);
 	}
 
-	public function testCloseUnclosedXmlTags()
+    /**
+     * @return array
+     */
+	public function testCloseUnclosedXmlTagsProvider()
+    {
+        return [
+            ['<SOMETHING>', '<SOMETHING>'],
+            ['<SOMETHING>foo</SOMETHING>', '<SOMETHING>foo'],
+            ['<SOMETHING>foo</SOMETHING>', '<SOMETHING>foo</SOMETHING>'],
+            ['<BANKID>XXXXX</BANKID>', '<BANKID>XXXXX</BANKID>'],
+            ['<ACCTID>XXXXXXXXXXX</ACCTID>', '<ACCTID>XXXXXXXXXXX</ACCTID>'],
+            ['<ACCTID>-198.98</ACCTID>', '<ACCTID>-198.98</ACCTID>'],
+            ['<ACCTID>-198.98</ACCTID>', '<ACCTID>-198.98'],
+        ];
+    }
+
+    /**
+     * @dataProvider testCloseUnclosedXmlTagsProvider
+     * @param $expected
+     * @param $input
+     */
+	public function testCloseUnclosedXmlTags($expected, $input)
 	{
 		$method = new \ReflectionMethod('\OfxParser\Parser', 'closeUnclosedXmlTags');
 		$method->setAccessible(true);
 
 		$parser = new Parser();
 
-		$this->assertEquals('<SOMETHING>', $method->invoke($parser, '<SOMETHING>'));
-		$this->assertEquals('<SOMETHING>foo</SOMETHING>', $method->invoke($parser, '<SOMETHING>foo'));
-		$this->assertEquals('<SOMETHING>foo</SOMETHING>', $method->invoke($parser, '<SOMETHING>foo</SOMETHING>'));
+		$this->assertEquals($expected, $method->invoke($parser, $input));
 	}
 
-	public function testConvertSgmlToXml()
-	{
-		$sgml = <<<HERE
+	public function testConvertSgmlToXmlProvider()
+    {
+        return [
+            [<<<HERE
 <SOMETHING>
 	<FOO>bar
 	<BAZ>bat</BAZ>
 </SOMETHING>
-HERE;
-		$sgml = str_replace("\n", "\r\n", $sgml);
-
-		$expected = <<<HERE
+HERE
+        , <<<HERE
 <SOMETHING>
 <FOO>bar</FOO>
 <BAZ>bat</BAZ>
 </SOMETHING>
-HERE;
+HERE
+        ], [<<<HERE
+<BANKACCTFROM>
+<BANKID>XXXXX</BANKID>
+<BRANCHID>XXXXX</BRANCHID>
+<ACCTID>XXXXXXXXXXX</ACCTID>
+<ACCTTYPE>CHECKING</ACCTTYPE>
+</BANKACCTFROM>
+HERE
+                ,<<<HERE
+<BANKACCTFROM>
+<BANKID>XXXXX</BANKID>
+<BRANCHID>XXXXX</BRANCHID>
+<ACCTID>XXXXXXXXXXX</ACCTID>
+<ACCTTYPE>CHECKING</ACCTTYPE>
+</BANKACCTFROM>
+HERE
+            ],
+        ];
+    }
 
+    /**
+     * @dataProvider testConvertSgmlToXmlProvider
+     */
+	public function testConvertSgmlToXml($sgml, $expected)
+	{
 		$method = new \ReflectionMethod('\OfxParser\Parser', 'convertSgmlToXml');
 		$method->setAccessible(true);
 
