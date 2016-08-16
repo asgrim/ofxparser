@@ -170,7 +170,7 @@ class Ofx
         $Bank = new BankAccount();
         $Bank->transactionUid = $xml->TRNUID;
         $Bank->agencyNumber = $xml->CCSTMTRS->BANKACCTFROM->BRANCHID;
-        $Bank->accountNumber = $xml->CCSTMTRS->BANKACCTFROM->ACCTID;
+        $Bank->accountNumber = $xml->CCSTMTRS->CCACCTFROM->ACCTID;
         $Bank->routingNumber = $xml->CCSTMTRS->BANKACCTFROM->BANKID;
         $Bank->accountType = $xml->CCSTMTRS->BANKACCTFROM->ACCTTYPE;
         $Bank->balance = $xml->CCSTMTRS->LEDGERBAL->BALAMT;
