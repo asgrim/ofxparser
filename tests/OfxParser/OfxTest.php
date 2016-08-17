@@ -19,9 +19,12 @@ class OfxTest extends \PHPUnit_Framework_TestCase
         $this->ofxdata = simplexml_load_string( file_get_contents($ofxFile) );
     }
 
+    /**
+     * @expectedException PHPUnit_Framework_Error
+     * @expectedExceptionMessage Argument 1 passed to OfxParser\Ofx::__construct() must be an instance of SimpleXMLElement, string given
+     */
     public function testAcceptOnlySimpleXMLElement()
     {
-        $this->setExpectedException('\TypeError');
         new Ofx('This is not an SimpleXMLObject');
     }
 
