@@ -43,7 +43,7 @@ class Parser
 	public function loadFromString($ofxContent)
 	{
 		$ofxContent = utf8_encode($ofxContent);
-		$ofxContent = str_replace(' ', '', $ofxContent); //remove whitespaces to allow linebreake
+		$ofxContent = preg_replace("/(\n\s*)/", "\n", $ofxContent); //remove linebreaks with whitespaces and change to linebreaks only
 		$ofxContent = str_replace("\n<", "\n\n<", $ofxContent); //add linebreaks to allow XML to parse
 
 		$sgmlStart = stripos($ofxContent, '<OFX>');
