@@ -23,12 +23,9 @@ class Parser
      */
     public function loadFromFile($ofxFile)
     {
-        if (file_exists($ofxFile))
-        {
+        if (file_exists($ofxFile)) {
             return $this->loadFromString(file_get_contents($ofxFile));
-        }
-        else
-        {
+        } else {
             throw new \InvalidArgumentException("File '{$ofxFile}' could not be found");
         }
     }
@@ -69,8 +66,7 @@ class Parser
         libxml_use_internal_errors(true);
         $xml = simplexml_load_string($xmlString);
 
-        if ($errors = libxml_get_errors())
-        {
+        if ($errors = libxml_get_errors()) {
             throw new \Exception("Failed to parse OFX: " . var_export($errors, true));
         }
 
@@ -88,8 +84,11 @@ class Parser
         // Matches: <SOMETHING>blah
         // Does not match: <SOMETHING>
         // Does not match: <SOMETHING>blah</SOMETHING>
-        if (preg_match("/<([A-Za-z0-9.]+)>([\wà-úÀ-Ú0-9\.\-\_\+\, ;:\[\]\'\&\/\\\*\(\)\+\{\|\}\!\£\$\?=@€£#%±§~`]+)$/", trim($line), $matches))
-        {
+        if (preg_match(
+            "/<([A-Za-z0-9.]+)>([\wà-úÀ-Ú0-9\.\-\_\+\, ;:\[\]\'\&\/\\\*\(\)\+\{\|\}\!\£\$\?=@€£#%±§~`]+)$/",
+            trim($line),
+            $matches
+        )) {
             return "<{$matches[1]}>{$matches[2]}</{$matches[1]}>";
         }
         return $line;
@@ -109,8 +108,7 @@ class Parser
         $lines = explode("\n", $sgml);
 
         $xml = "";
-        foreach ($lines as $line)
-        {
+        foreach ($lines as $line) {
             $xml .= trim($this->closeUnclosedXmlTags($line)) . "\n";
         }
 

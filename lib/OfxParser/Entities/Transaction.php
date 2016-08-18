@@ -25,12 +25,12 @@ class Transaction extends AbstractEntity
         "OTHER"       => "Other"
     );
 
-	public $type;
-	public $date;
-	public $amount;
-	public $uniqueId;
-	public $name;
-	public $memo;
+    public $type;
+    public $date;
+    public $amount;
+    public $uniqueId;
+    public $name;
+    public $memo;
     public $sic;
     public $checkNumber;
 

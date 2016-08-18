@@ -42,12 +42,9 @@ class Ofx
         $this->SignOn = $this->buildSignOn($xml->SIGNONMSGSRSV1->SONRS);
         $this->SignupAccountInfo = $this->buildAccountInfo($xml->SIGNUPMSGSRSV1->ACCTINFOTRNRS);
 
-        if(isset($xml->BANKMSGSRSV1)) {
-
+        if (isset($xml->BANKMSGSRSV1)) {
             $this->BankAccounts = $this->buildBankAccounts($xml);
-
-        } else if(isset($xml->CREDITCARDMSGSRSV1)) {
-
+        } elseif (isset($xml->CREDITCARDMSGSRSV1)) {
             $this->BankAccounts = $this->buildCreditAccounts($xml);
         }
 
@@ -92,7 +89,9 @@ class Ofx
      */
     private function buildAccountInfo($xml)
     {
-        if (!isset($xml->ACCTINFO)) return [];
+        if (!isset($xml->ACCTINFO)) {
+            return [];
+        }
 
         $accounts = [];
         foreach ($xml->ACCTINFO as $account) {
@@ -115,7 +114,6 @@ class Ofx
         $bankAccounts = [];
 
         foreach ($xml->CREDITCARDMSGSRSV1->CCSTMTTRNRS as $accountStatement) {
-
             $bankAccounts[] = $this->buildCreditAccount($accountStatement);
         }
         return $bankAccounts;
@@ -248,9 +246,7 @@ class Ofx
 
             try {
                 return new \DateTime($format);
-
             } catch (\Exception $e) {
-
                 if ($ignoreErrors) {
                     return null;
                 }
@@ -284,10 +280,9 @@ class Ofx
                     ),
                 array("",
                     ".$1"),
-                $amountString);
-        }
-
-        //000,00 or 0.000,00
+                $amountString
+            );
+        } //000,00 or 0.000,00
         elseif (preg_match("/^-?([0-9\.]+,?[0-9]{2})$/", $amountString) == 1) {
             $amountString = preg_replace(
                 array("/([\.]+)/",
@@ -295,10 +290,10 @@ class Ofx
                     ),
                 array("",
                     ".$1"),
-                $amountString);
+                $amountString
+            );
         }
 
         return (float)$amountString;
     }
-
 }

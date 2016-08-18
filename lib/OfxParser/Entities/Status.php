@@ -28,5 +28,4 @@ class Status extends AbstractEntity
         $code = (string) $this->code;
         return isset($this->codes[$code]) ? $this->codes[$code] : '';
     }
-
 }
