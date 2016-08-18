@@ -6,47 +6,47 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 
 class ParserTest extends \PHPUnit_Framework_TestCase
 {
-	public function testXmlLoadStringThrowsExceptionWithInvalidXml()
-	{
-		$invalidXml = '<invalid xml>';
+    public function testXmlLoadStringThrowsExceptionWithInvalidXml()
+    {
+        $invalidXml = '<invalid xml>';
 
-		$method = new \ReflectionMethod('\OfxParser\Parser', 'xmlLoadString');
-		$method->setAccessible(true);
+        $method = new \ReflectionMethod('\OfxParser\Parser', 'xmlLoadString');
+        $method->setAccessible(true);
 
-		try
-		{
-			$method->invoke(new Parser(), $invalidXml);
-		}
-		catch (\Exception $e)
-		{
-			if (stripos($e->getMessage(), 'Failed to parse OFX') !== false)
-			{
-				return true;
-			}
+        try
+        {
+            $method->invoke(new Parser(), $invalidXml);
+        }
+        catch (\Exception $e)
+        {
+            if (stripos($e->getMessage(), 'Failed to parse OFX') !== false)
+            {
+                return true;
+            }
 
-			throw $e;
-		}
+            throw $e;
+        }
 
-		$this->fail('Method xmlLoadString did not raise an expected exception parsing an invalid XML string');
-	}
+        $this->fail('Method xmlLoadString did not raise an expected exception parsing an invalid XML string');
+    }
 
-	public function testXmlLoadStringLoadsValidXml()
-	{
-		$validXml = '<fooRoot><foo>bar</foo></fooRoot>';
+    public function testXmlLoadStringLoadsValidXml()
+    {
+        $validXml = '<fooRoot><foo>bar</foo></fooRoot>';
 
-		$method = new \ReflectionMethod('\OfxParser\Parser', 'xmlLoadString');
-		$method->setAccessible(true);
+        $method = new \ReflectionMethod('\OfxParser\Parser', 'xmlLoadString');
+        $method->setAccessible(true);
 
-		$xml = $method->invoke(new Parser(), $validXml);
+        $xml = $method->invoke(new Parser(), $validXml);
 
-		$this->assertInstanceOf('SimpleXMLElement', $xml);
-		$this->assertEquals('bar', (string)$xml->foo);
-	}
+        $this->assertInstanceOf('SimpleXMLElement', $xml);
+        $this->assertEquals('bar', (string)$xml->foo);
+    }
 
     /**
      * @return array
      */
-	public function testCloseUnclosedXmlTagsProvider()
+    public function testCloseUnclosedXmlTagsProvider()
     {
         return [
             ['<SOMETHING>', '<SOMETHING>'],
@@ -64,23 +64,23 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      * @param $expected
      * @param $input
      */
-	public function testCloseUnclosedXmlTags($expected, $input)
-	{
-		$method = new \ReflectionMethod('\OfxParser\Parser', 'closeUnclosedXmlTags');
-		$method->setAccessible(true);
+    public function testCloseUnclosedXmlTags($expected, $input)
+    {
+        $method = new \ReflectionMethod('\OfxParser\Parser', 'closeUnclosedXmlTags');
+        $method->setAccessible(true);
 
-		$parser = new Parser();
+        $parser = new Parser();
 
-		$this->assertEquals($expected, $method->invoke($parser, $input));
-	}
+        $this->assertEquals($expected, $method->invoke($parser, $input));
+    }
 
-	public function testConvertSgmlToXmlProvider()
+    public function testConvertSgmlToXmlProvider()
     {
         return [
             [<<<HERE
 <SOMETHING>
-	<FOO>bar
-	<BAZ>bat</BAZ>
+    <FOO>bar
+    <BAZ>bat</BAZ>
 </SOMETHING>
 HERE
         , <<<HERE
@@ -112,41 +112,41 @@ HERE
     /**
      * @dataProvider testConvertSgmlToXmlProvider
      */
-	public function testConvertSgmlToXml($sgml, $expected)
-	{
-		$method = new \ReflectionMethod('\OfxParser\Parser', 'convertSgmlToXml');
-		$method->setAccessible(true);
+    public function testConvertSgmlToXml($sgml, $expected)
+    {
+        $method = new \ReflectionMethod('\OfxParser\Parser', 'convertSgmlToXml');
+        $method->setAccessible(true);
 
-		$this->assertEquals($expected, $method->invoke(new Parser, $sgml));
-	}
+        $this->assertEquals($expected, $method->invoke(new Parser, $sgml));
+    }
 
-	public function testLoadFromFileWhenFileDoesNotExist()
-	{
-		$this->setExpectedException('\InvalidArgumentException');
+    public function testLoadFromFileWhenFileDoesNotExist()
+    {
+        $this->setExpectedException('\InvalidArgumentException');
 
-		$parser = new Parser();
-		$parser->loadFromFile('a non-existent file');
-	}
+        $parser = new Parser();
+        $parser->loadFromFile('a non-existent file');
+    }
 
     /**
      * @dataProvider testLoadFromStringProvider
      */
-	public function testLoadFromFileWhenFileDoesExist($filename)
-	{
-		if (!file_exists($filename))
-		{
-			$this->markTestSkipped('Could not find data file, cannot test loadFromFile method fully');
-		}
+    public function testLoadFromFileWhenFileDoesExist($filename)
+    {
+        if (!file_exists($filename))
+        {
+            $this->markTestSkipped('Could not find data file, cannot test loadFromFile method fully');
+        }
 
-		$parser = $this->getMock('\OfxParser\Parser', ['loadFromString']);
-		$parser->expects($this->once())->method('loadFromString');
-		$parser->loadFromFile($filename);
-	}
+        $parser = $this->getMock('\OfxParser\Parser', ['loadFromString']);
+        $parser->expects($this->once())->method('loadFromString');
+        $parser->loadFromFile($filename);
+    }
 
     /**
      * @return array
      */
-	public function testLoadFromStringProvider()
+    public function testLoadFromStringProvider()
     {
         return [
             [dirname(__DIR__).'/fixtures/ofxdata.ofx'],
@@ -160,16 +160,16 @@ HERE
      * @param $filename
      * @dataProvider testLoadFromStringProvider
      */
-	public function testLoadFromString($filename)
-	{
-		if (!file_exists($filename))
-		{
-			$this->markTestSkipped('Could not find data file, cannot test loadFromString method fully');
-		}
+    public function testLoadFromString($filename)
+    {
+        if (!file_exists($filename))
+        {
+            $this->markTestSkipped('Could not find data file, cannot test loadFromString method fully');
+        }
 
-		$content = file_get_contents($filename);
+        $content = file_get_contents($filename);
 
-		$parser = new Parser();
-		$parser->loadFromString($content);
-	}
+        $parser = new Parser();
+        $parser->loadFromString($content);
+    }
 }

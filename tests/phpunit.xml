@@ -6,15 +6,15 @@
          processIsolation="false"
          stopOnFailure="false"
          syntaxCheck="false">
-	<testsuites>
-		<testsuite name="loweoj/ofx-parser">
-			<directory>./OfxParser/</directory>
-		</testsuite>
-	</testsuites>
+    <testsuites>
+        <testsuite name="loweoj/ofx-parser">
+            <directory>./OfxParser/</directory>
+        </testsuite>
+    </testsuites>
 
-	<filter>
-		<whitelist>
-			<directory>../lib/</directory>
-		</whitelist>
-	</filter>
+    <filter>
+        <whitelist>
+            <directory>../lib/</directory>
+        </whitelist>
+    </filter>
 </phpunit>
