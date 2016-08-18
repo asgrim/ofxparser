@@ -13,14 +13,10 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $method = new \ReflectionMethod('\OfxParser\Parser', 'xmlLoadString');
         $method->setAccessible(true);
 
-        try
-        {
+        try {
             $method->invoke(new Parser(), $invalidXml);
-        }
-        catch (\Exception $e)
-        {
-            if (stripos($e->getMessage(), 'Failed to parse OFX') !== false)
-            {
+        } catch (\Exception $e) {
+            if (stripos($e->getMessage(), 'Failed to parse OFX') !== false) {
                 return true;
             }
 
@@ -89,7 +85,7 @@ HERE
 <BAZ>bat</BAZ>
 </SOMETHING>
 HERE
-        ], [<<<HERE
+            ], [<<<HERE
 <BANKACCTFROM>
 <BANKID>XXXXX</BANKID>
 <BRANCHID>XXXXX</BRANCHID>
@@ -133,8 +129,7 @@ HERE
      */
     public function testLoadFromFileWhenFileDoesExist($filename)
     {
-        if (!file_exists($filename))
-        {
+        if (!file_exists($filename)) {
             $this->markTestSkipped('Could not find data file, cannot test loadFromFile method fully');
         }
 
@@ -162,8 +157,7 @@ HERE
      */
     public function testLoadFromString($filename)
     {
-        if (!file_exists($filename))
-        {
+        if (!file_exists($filename)) {
             $this->markTestSkipped('Could not find data file, cannot test loadFromString method fully');
         }
 
