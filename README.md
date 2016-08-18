@@ -1,7 +1,7 @@
 OFX Parser
 =================
 
-OFX Parser is a PHP library designed to parse an OFX file downloaded from a financial institution into simple PHP objects. 
+OFX Parser is a PHP library designed to parse an OFX file downloaded from a financial institution into simple PHP objects.
 
 It supports multiple Bank Accounts, the required "Sign On" response, and recognises OFX timestamps.
 
