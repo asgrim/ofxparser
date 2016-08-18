@@ -133,7 +133,9 @@ HERE
             $this->markTestSkipped('Could not find data file, cannot test loadFromFile method fully');
         }
 
-        $parser = $this->getMock('\OfxParser\Parser', ['loadFromString']);
+        $parser = $this->getMockBuilder('\OfxParser\Parser')
+                         ->setMethods(['loadFromString'])
+                         ->getMock();
         $parser->expects($this->once())->method('loadFromString');
         $parser->loadFromFile($filename);
     }
