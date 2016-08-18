@@ -13,10 +13,9 @@ abstract class AbstractEntity
      */
     public function __get($name)
     {
-        if(method_exists($this, lcfirst($name))) {
+        if (method_exists($this, lcfirst($name))) {
             return $this->{$name}();
         }
         return false;
     }
 }
-

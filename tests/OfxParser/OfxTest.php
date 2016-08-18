@@ -12,16 +12,17 @@ class OfxTest extends \PHPUnit_Framework_TestCase
     {
         $ofxFile = 'fixtures/ofxdata-xml.ofx';
 
-        if (!file_exists($ofxFile))
-        {
+        if (!file_exists($ofxFile)) {
             $this->markTestSkipped('Could not find data file, cannot test Ofx Class');
         }
-        $this->ofxdata = simplexml_load_string( file_get_contents($ofxFile) );
+        $this->ofxdata = simplexml_load_string(file_get_contents($ofxFile));
     }
 
+    /**
+     * @expectedException PHPUnit_Framework_Error
+     */
     public function testAcceptOnlySimpleXMLElement()
     {
-        $this->setExpectedException('\Exception');
         new Ofx('This is not an SimpleXMLObject');
     }
 
@@ -69,82 +70,74 @@ class OfxTest extends \PHPUnit_Framework_TestCase
     public function testBuildsMultipleBankAccounts()
     {
         $multiOfxFile = 'fixtures/ofx-multiple-accounts-xml.ofx';
-        if (!file_exists($multiOfxFile))
-        {
+        if (!file_exists($multiOfxFile)) {
             $this->markTestSkipped('Could not find multiple account data file, cannot fully test Multiple Bank Accounts');
         }
-        $multiOfxData = simplexml_load_string( file_get_contents($multiOfxFile) );
+        $multiOfxData = simplexml_load_string(file_get_contents($multiOfxFile));
         $Ofx = new Ofx($multiOfxData);
 
         $this->assertCount(3, $Ofx->BankAccounts);
         $this->assertEmpty($Ofx->BankAccount);
     }
 
-     public function testBuildsBankAccount()
-     {
-         $Ofx = new Ofx($this->ofxdata);
-
-         $Account = $Ofx->BankAccount;
-         $this->assertEquals('23382938', $Account->transactionUid);
-         $this->assertEquals('098-121', $Account->accountNumber);
-         $this->assertEquals('987654321', $Account->routingNumber);
-         $this->assertEquals('SAVINGS', $Account->accountType);
-         $this->assertEquals('5250.00', $Account->balance);
-         $this->assertInstanceOf('DateTime', $Account->balanceDate);
-
-         $Statement = $Account->Statement;
-         $this->assertEquals('USD', $Statement->currency);
-         $this->assertInstanceOf('DateTime', $Statement->startDate);
-         $this->assertInstanceOf('DateTime', $Statement->endDate);
-
-         $Transactions = $Statement->transactions;
-         $this->assertCount(3, $Transactions);
-
-         $expectedTransactions = [
-             [
+    public function testBuildsBankAccount()
+    {
+        $Ofx = new Ofx($this->ofxdata);
+        $Account = $Ofx->BankAccount;
+        $this->assertEquals('23382938', $Account->transactionUid);
+        $this->assertEquals('098-121', $Account->accountNumber);
+        $this->assertEquals('987654321', $Account->routingNumber);
+        $this->assertEquals('SAVINGS', $Account->accountType);
+        $this->assertEquals('5250.00', $Account->balance);
+        $this->assertInstanceOf('DateTime', $Account->balanceDate);
+        $Statement = $Account->Statement;
+        $this->assertEquals('USD', $Statement->currency);
+        $this->assertInstanceOf('DateTime', $Statement->startDate);
+        $this->assertInstanceOf('DateTime', $Statement->endDate);
+        $Transactions = $Statement->transactions;
+        $this->assertCount(3, $Transactions);
+        $expectedTransactions = [
+            [
+               'type' => 'CREDIT',
+               'typeDesc' => 'Generic credit',
+               'amount' => '200.00',
+               'uniqueId' => '980315001',
+               'name' => 'DEPOSIT',
+               'memo' => 'automatic deposit',
+               'sic' => '',
+               'checkNumber' => ''
+            ],
+            [
                 'type' => 'CREDIT',
                 'typeDesc' => 'Generic credit',
-                'amount' => '200.00',
-                'uniqueId' => '980315001',
-                'name' => 'DEPOSIT',
-                'memo' => 'automatic deposit',
+                'amount' => '150.00',
+                'uniqueId' => '980310001',
+                'name' => 'TRANSFER',
+                'memo' => 'Transfer from checking',
                 'sic' => '',
                 'checkNumber' => ''
-             ],
-             [
-                 'type' => 'CREDIT',
-                 'typeDesc' => 'Generic credit',
-                 'amount' => '150.00',
-                 'uniqueId' => '980310001',
-                 'name' => 'TRANSFER',
-                 'memo' => 'Transfer from checking',
-                 'sic' => '',
-                 'checkNumber' => ''
-             ],
-             [
-                 'type' => 'CHECK',
-                 'typeDesc' => 'Cheque',
-                 'amount' => '-100.00',
-                 'uniqueId' => '980309001',
-                 'name' => 'Cheque',
-                 'memo' => '',
-                 'sic' => '',
-                 'checkNumber' => '1025'
-             ],
-
-         ];
-
-         foreach( $Transactions as $i => $transaction )
-         {
-             $this->assertEquals($expectedTransactions[$i]['type'], $transaction->type);
-             $this->assertEquals($expectedTransactions[$i]['typeDesc'], $transaction->typeDesc);
-             $this->assertEquals($expectedTransactions[$i]['amount'], $transaction->amount);
-             $this->assertEquals($expectedTransactions[$i]['uniqueId'], $transaction->uniqueId);
-             $this->assertEquals($expectedTransactions[$i]['name'], $transaction->name);
-             $this->assertEquals($expectedTransactions[$i]['memo'], $transaction->memo);
-             $this->assertEquals($expectedTransactions[$i]['sic'], $transaction->sic);
-             $this->assertEquals($expectedTransactions[$i]['checkNumber'], $transaction->checkNumber);
-             $this->assertInstanceOf('DateTime', $transaction->date);
-         }
-     }
+            ],
+            [
+                'type' => 'CHECK',
+                'typeDesc' => 'Cheque',
+                'amount' => '-100.00',
+                'uniqueId' => '980309001',
+                'name' => 'Cheque',
+                'memo' => '',
+                'sic' => '',
+                'checkNumber' => '1025'
+            ],
+        ];
+        foreach ($Transactions as $i => $transaction) {
+            $this->assertEquals($expectedTransactions[$i]['type'], $transaction->type);
+            $this->assertEquals($expectedTransactions[$i]['typeDesc'], $transaction->typeDesc);
+            $this->assertEquals($expectedTransactions[$i]['amount'], $transaction->amount);
+            $this->assertEquals($expectedTransactions[$i]['uniqueId'], $transaction->uniqueId);
+            $this->assertEquals($expectedTransactions[$i]['name'], $transaction->name);
+            $this->assertEquals($expectedTransactions[$i]['memo'], $transaction->memo);
+            $this->assertEquals($expectedTransactions[$i]['sic'], $transaction->sic);
+            $this->assertEquals($expectedTransactions[$i]['checkNumber'], $transaction->checkNumber);
+            $this->assertInstanceOf('DateTime', $transaction->date);
+        }
+    }
 }
