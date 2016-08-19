@@ -22,11 +22,11 @@ class Parser
      */
     public function loadFromFile($ofxFile)
     {
-        if (file_exists($ofxFile)) {
-            return $this->loadFromString(file_get_contents($ofxFile));
-        } else {
+        if (!file_exists($ofxFile)) {
             throw new \InvalidArgumentException("File '{$ofxFile}' could not be found");
         }
+
+        return $this->loadFromString(file_get_contents($ofxFile));
     }
 
     /**
