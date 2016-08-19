@@ -1,6 +1,8 @@
 OFX Parser
 =================
 
+[![Build Status](https://travis-ci.org/asgrim/ofxparser.svg?branch=master)](https://travis-ci.org/asgrim/ofxparser) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/asgrim/ofxparser/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/asgrim/ofxparser/?branch=master) [![Code Coverage](https://scrutinizer-ci.com/g/asgrim/ofxparser/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/asgrim/ofxparser/?branch=master) [![Latest Stable Version](https://poser.pugx.org/asgrim/ofxparser/v/stable)](https://packagist.org/packages/asgrim/ofxparser) [![License](https://poser.pugx.org/asgrim/ofxparser/license)](https://packagist.org/packages/asgrim/ofxparser)
+
 OFX Parser is a PHP library designed to parse an OFX file downloaded from a financial institution into simple PHP objects. 
 
 It supports multiple Bank Accounts, the required "Sign On" response, and recognises OFX timestamps.
@@ -21,12 +23,14 @@ You can access the nodes in your OFX file as follows:
 $ofxParser = new \OfxParser\Parser;
 $ofx = $ofxParser->loadFromFile('/path/to/your/bankstatement.ofx');
 
-// Get the statement start and end dates
-$startDate = $ofx->BankAccount->Statement->startDate;
-$endDate = $ofx->BankAccount->Statement->endDate;
+$bankAccount = reset($ofx->bankAccounts);
 
-// Get the statements for the current bank account
-$transactions = $ofx->BankAccount->Statement->transactions;
+// Get the statement start and end dates
+$startDate = $bankAccount->statement->startDate;
+$endDate = $bankAccount->statement->endDate;
+
+// Get the statement transactions for the account
+$transactions = $bankAccount->statement->transactions;
 ```
 
 Most common nodes are support. If you come across an inaccessible node in your OFX file, please submit a pull request!
