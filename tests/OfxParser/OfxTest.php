@@ -35,6 +35,9 @@ class OfxTest extends \PHPUnit_Framework_TestCase
             '-1000,00' => ['-1000,00', -1000.0],
             '-1,000.00' => ['-1,000.00', -1000.0],
             '-1.000,00' => ['-1.000,00', -1000.0],
+            '1' => ['1', 1.0],
+            '10' => ['10', 10.0],
+            '100' => ['100', 1.0], // @todo this is weird behaviour, should not really expect this
         ];
     }
 
