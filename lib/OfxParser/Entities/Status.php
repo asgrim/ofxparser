@@ -25,7 +25,7 @@ class Status extends AbstractEntity
     public function codeDesc()
     {
         // Cast code to string from SimpleXMLObject
-        $code = (string) $this->code;
+        $code = (string)$this->code;
         return array_key_exists($code, self::$codes) ? self::$codes[$code] : '';
     }
 }

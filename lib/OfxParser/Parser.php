@@ -75,7 +75,7 @@ class Parser
      * Detect any unclosed XML tags - if they exist, close them
      *
      * @param string $line
-     * @return $line
+     * @return string
      */
     private function closeUnclosedXmlTags($line)
     {

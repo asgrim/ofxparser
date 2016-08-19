@@ -73,16 +73,16 @@ class Ofx
      */
     private function buildSignOn($xml)
     {
-        $SignOn = new SignOn();
-        $SignOn->Status = $this->buildStatus($xml->STATUS);
-        $SignOn->date = $this->createDateTimeFromStr($xml->DTSERVER, true);
-        $SignOn->language = $xml->LANGUAGE;
+        $signOn = new SignOn();
+        $signOn->status = $this->buildStatus($xml->STATUS);
+        $signOn->date = $this->createDateTimeFromStr($xml->DTSERVER, true);
+        $signOn->language = $xml->LANGUAGE;
 
-        $SignOn->Institute = new Institute();
-        $SignOn->Institute->name = $xml->FI->ORG;
-        $SignOn->Institute->id = $xml->FI->FID;
+        $signOn->institute = new Institute();
+        $signOn->institute->name = $xml->FI->ORG;
+        $signOn->institute->id = $xml->FI->FID;
 
-        return $SignOn;
+        return $signOn;
     }
 
     /**
@@ -97,10 +97,10 @@ class Ofx
 
         $accounts = [];
         foreach ($xml->ACCTINFO as $account) {
-            $AccountInfo = new AccountInfo();
-            $AccountInfo->desc = $account->DESC;
-            $AccountInfo->number = $account->ACCTID;
-            $accounts[] = $AccountInfo;
+            $accountInfo = new AccountInfo();
+            $accountInfo->desc = $account->DESC;
+            $accountInfo->number = $account->ACCTID;
+            $accounts[] = $accountInfo;
         }
 
         return $accounts;
@@ -144,22 +144,22 @@ class Ofx
      */
     private function buildBankAccount($xml)
     {
-        $Bank = new BankAccount();
-        $Bank->transactionUid = $xml->TRNUID;
-        $Bank->agencyNumber = $xml->STMTRS->BANKACCTFROM->BRANCHID;
-        $Bank->accountNumber = $xml->STMTRS->BANKACCTFROM->ACCTID;
-        $Bank->routingNumber = $xml->STMTRS->BANKACCTFROM->BANKID;
-        $Bank->accountType = $xml->STMTRS->BANKACCTFROM->ACCTTYPE;
-        $Bank->balance = $xml->STMTRS->LEDGERBAL->BALAMT;
-        $Bank->balanceDate = $this->createDateTimeFromStr($xml->STMTRS->LEDGERBAL->DTASOF, true);
+        $bankAccount = new BankAccount();
+        $bankAccount->transactionUid = $xml->TRNUID;
+        $bankAccount->agencyNumber = $xml->STMTRS->BANKACCTFROM->BRANCHID;
+        $bankAccount->accountNumber = $xml->STMTRS->BANKACCTFROM->ACCTID;
+        $bankAccount->routingNumber = $xml->STMTRS->BANKACCTFROM->BANKID;
+        $bankAccount->accountType = $xml->STMTRS->BANKACCTFROM->ACCTTYPE;
+        $bankAccount->balance = $xml->STMTRS->LEDGERBAL->BALAMT;
+        $bankAccount->balanceDate = $this->createDateTimeFromStr($xml->STMTRS->LEDGERBAL->DTASOF, true);
 
-        $Bank->Statement = new Statement();
-        $Bank->Statement->currency = $xml->STMTRS->CURDEF;
-        $Bank->Statement->startDate = $this->createDateTimeFromStr($xml->STMTRS->BANKTRANLIST->DTSTART);
-        $Bank->Statement->endDate = $this->createDateTimeFromStr($xml->STMTRS->BANKTRANLIST->DTEND);
-        $Bank->Statement->transactions = $this->buildTransactions($xml->STMTRS->BANKTRANLIST->STMTTRN);
+        $bankAccount->statement = new Statement();
+        $bankAccount->statement->currency = $xml->STMTRS->CURDEF;
+        $bankAccount->statement->startDate = $this->createDateTimeFromStr($xml->STMTRS->BANKTRANLIST->DTSTART);
+        $bankAccount->statement->endDate = $this->createDateTimeFromStr($xml->STMTRS->BANKTRANLIST->DTEND);
+        $bankAccount->statement->transactions = $this->buildTransactions($xml->STMTRS->BANKTRANLIST->STMTTRN);
 
-        return $Bank;
+        return $bankAccount;
     }
 
     /**
@@ -169,25 +169,25 @@ class Ofx
      */
     private function buildCreditAccount($xml)
     {
-        $Bank = new BankAccount();
-        $Bank->transactionUid = $xml->TRNUID;
-        $Bank->agencyNumber = $xml->CCSTMTRS->BANKACCTFROM->BRANCHID;
-        $Bank->accountNumber = $xml->CCSTMTRS->BANKACCTFROM->ACCTID;
-        $Bank->routingNumber = $xml->CCSTMTRS->BANKACCTFROM->BANKID;
-        $Bank->accountType = $xml->CCSTMTRS->BANKACCTFROM->ACCTTYPE;
-        $Bank->balance = $xml->CCSTMTRS->LEDGERBAL->BALAMT;
-        $Bank->balanceDate = $this->createDateTimeFromStr($xml->CCSTMTRS->LEDGERBAL->DTASOF, true);
+        $creditAccount = new BankAccount();
+        $creditAccount->transactionUid = $xml->TRNUID;
+        $creditAccount->agencyNumber = $xml->CCSTMTRS->BANKACCTFROM->BRANCHID;
+        $creditAccount->accountNumber = $xml->CCSTMTRS->BANKACCTFROM->ACCTID;
+        $creditAccount->routingNumber = $xml->CCSTMTRS->BANKACCTFROM->BANKID;
+        $creditAccount->accountType = $xml->CCSTMTRS->BANKACCTFROM->ACCTTYPE;
+        $creditAccount->balance = $xml->CCSTMTRS->LEDGERBAL->BALAMT;
+        $creditAccount->balanceDate = $this->createDateTimeFromStr($xml->CCSTMTRS->LEDGERBAL->DTASOF, true);
 
-        $Bank->Statement = new Statement();
-        $Bank->Statement->currency = $xml->CCSTMTRS->CURDEF;
-        $Bank->Statement->startDate = $this->createDateTimeFromStr($xml->CCSTMTRS->BANKTRANLIST->DTSTART);
-        $Bank->Statement->endDate = $this->createDateTimeFromStr($xml->CCSTMTRS->BANKTRANLIST->DTEND);
-        $Bank->Statement->transactions = $this->buildTransactions($xml->CCSTMTRS->BANKTRANLIST->STMTTRN);
+        $creditAccount->statement = new Statement();
+        $creditAccount->statement->currency = $xml->CCSTMTRS->CURDEF;
+        $creditAccount->statement->startDate = $this->createDateTimeFromStr($xml->CCSTMTRS->BANKTRANLIST->DTSTART);
+        $creditAccount->statement->endDate = $this->createDateTimeFromStr($xml->CCSTMTRS->BANKTRANLIST->DTEND);
+        $creditAccount->statement->transactions = $this->buildTransactions($xml->CCSTMTRS->BANKTRANLIST->STMTTRN);
 
-        return $Bank;
+        return $creditAccount;
     }
 
-    private function buildTransactions($transactions)
+    private function buildTransactions(array $transactions)
     {
         $return = [];
         foreach ($transactions as $t) {
@@ -232,12 +232,12 @@ class Ofx
      */
     private function createDateTimeFromStr($dateString, $ignoreErrors = false)
     {
-        $regex = "/"
-            . "(\d{4})(\d{2})(\d{2})?" // YYYYMMDD             1,2,3
+        $regex = '/'
+            . "(\d{4})(\d{2})(\d{2})?"     // YYYYMMDD             1,2,3
             . "(?:(\d{2})(\d{2})(\d{2}))?" // HHMMSS   - optional  4,5,6
-            . "(?:\.(\d{3}))?" // .XXX     - optional  7
-            . "(?:\[(-?\d+)\:(\w{3}\]))?" // [-n:TZ]  - optional  8,9
-            . "/";
+            . "(?:\.(\d{3}))?"             // .XXX     - optional  7
+            . "(?:\[(-?\d+)\:(\w{3}\]))?"  // [-n:TZ]  - optional  8,9
+            . '/';
 
         if (preg_match($regex, $dateString, $matches)) {
             $year = (int)$matches[1];
@@ -260,7 +260,7 @@ class Ofx
             }
         }
 
-        throw new \RuntimeException("Failed to initialize DateTime for string: " . $dateString);
+        throw new \RuntimeException('Failed to initialize DateTime for string: ' . $dateString);
     }
 
     /**
@@ -277,7 +277,7 @@ class Ofx
      */
     private function createAmountFromStr($amountString)
     {
-        // 000.00 or 0,000.00
+        // Decimal mark style (UK/US): 000.00 or 0,000.00
         if (preg_match('/^-?([\d,]+)(\.?)([\d]{2})$/', $amountString) === 1) {
             return (float)preg_replace(
                 ['/([,]+)/', '/\.?([\d]{2})$/'],
@@ -286,7 +286,7 @@ class Ofx
             );
         }
 
-        // 000,00 or 0.000,00
+        // European style: 000,00 or 0.000,00
         if (preg_match('/^-?([\d\.]+,?[\d]{2})$/', $amountString) === 1) {
             return (float)preg_replace(
                 ['/([\.]+)/', '/,?([\d]{2})$/'],

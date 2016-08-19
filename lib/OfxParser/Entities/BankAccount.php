@@ -11,4 +11,5 @@ class BankAccount extends AbstractEntity
     public $routingNumber;
     public $statement;
     public $transactionUid;
+    public $agencyNumber;
 }

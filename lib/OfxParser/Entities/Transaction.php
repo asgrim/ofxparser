@@ -41,7 +41,7 @@ class Transaction extends AbstractEntity
     public function typeDesc()
     {
         // Cast SimpleXMLObject to string
-        $type = (string) $this->type;
+        $type = (string)$this->type;
         return array_key_exists($type, self::$types) ? self::$types[$type] : '';
     }
 }

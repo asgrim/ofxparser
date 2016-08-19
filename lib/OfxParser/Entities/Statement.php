@@ -5,7 +5,7 @@ namespace OfxParser\Entities;
 class Statement extends AbstractEntity
 {
     public $currency;
-    public $transaction;
+    public $transactions;
     public $startDate;
     public $endDate;
 }
