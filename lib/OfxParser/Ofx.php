@@ -36,6 +36,7 @@ class Ofx
 
     /**
      * @param SimpleXMLElement $xml
+     * @throws \Exception
      */
     public function __construct(SimpleXMLElement $xml)
     {
@@ -68,6 +69,7 @@ class Ofx
     /**
      * @param $xml
      * @return SignOn
+     * @throws \Exception
      */
     private function buildSignOn($xml)
     {
@@ -107,6 +109,7 @@ class Ofx
     /**
      * @param SimpleXMLElement $xml
      * @return array
+     * @throws \Exception
      */
     private function buildCreditAccounts(SimpleXMLElement $xml)
     {
@@ -122,6 +125,7 @@ class Ofx
     /**
      * @param SimpleXMLElement $xml
      * @return array
+     * @throws \Exception
      */
     private function buildBankAccounts(SimpleXMLElement $xml)
     {
@@ -221,9 +225,10 @@ class Ofx
      * YYYYMMDDHHMMSS
      * YYYYMMDD
      *
-     * @param  string  $dateString
+     * @param  string $dateString
      * @param  boolean $ignoreErrors
-     * @return \DateTime | $dateString
+     * @return \DateTime $dateString
+     * @throws \Exception
      */
     private function createDateTimeFromStr($dateString, $ignoreErrors = false)
     {
@@ -255,11 +260,11 @@ class Ofx
             }
         }
 
-        throw new \Exception("Failed to initialize DateTime for string: " . $dateString);
+        throw new \RuntimeException("Failed to initialize DateTime for string: " . $dateString);
     }
 
     /**
-     * Create a formated number in Float according to different locale options
+     * Create a formatted number in Float according to different locale options
      *
      * Supports:
      * 000,00 and -000,00
@@ -267,14 +272,14 @@ class Ofx
      * 0,000.00 and -0,000.00
      * 000.00 and 000.00
      *
-     * @param  string  $amountString
+     * @param  string $amountString
      * @return float
      */
     private function createAmountFromStr($amountString)
     {
-        //000.00 or 0,000.00
-        if (preg_match("/^-?([0-9,]+)(\.?)([0-9]{2})$/", $amountString) == 1) {
-            $amountString = preg_replace(
+        // 000.00 or 0,000.00
+        if (preg_match("/^-?([0-9,]+)(\.?)([0-9]{2})$/", $amountString) === 1) {
+            return (float)preg_replace(
                 array("/([,]+)/",
                     "/\.?([0-9]{2})$/"
                     ),
@@ -282,9 +287,11 @@ class Ofx
                     ".$1"),
                 $amountString
             );
-        } //000,00 or 0.000,00
-        elseif (preg_match("/^-?([0-9\.]+,?[0-9]{2})$/", $amountString) == 1) {
-            $amountString = preg_replace(
+        }
+
+        // 000,00 or 0.000,00
+        if (preg_match("/^-?([0-9\.]+,?[0-9]{2})$/", $amountString) === 1) {
+            return (float)preg_replace(
                 array("/([\.]+)/",
                     "/,?([0-9]{2})$/"
                     ),

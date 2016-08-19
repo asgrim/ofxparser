@@ -4,7 +4,7 @@ namespace OfxParser\Entities;
 
 class Status extends AbstractEntity
 {
-    protected $codes= [
+    private static $codes = [
         '0'       => 'Success',
         '2000'    => 'General error',
         '15000'   => 'Must change USERPASS',
@@ -26,6 +26,6 @@ class Status extends AbstractEntity
     {
         // Cast code to string from SimpleXMLObject
         $code = (string) $this->code;
-        return isset($this->codes[$code]) ? $this->codes[$code] : '';
+        return array_key_exists($code, self::$codes) ? self::$codes[$code] : '';
     }
 }
