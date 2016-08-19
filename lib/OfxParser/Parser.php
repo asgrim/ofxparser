@@ -13,21 +13,20 @@ namespace OfxParser;
  */
 class Parser
 {
-
     /**
      * Load an OFX file into this parser by way of a filename
      *
      * @param string $ofxFile A path that can be loaded with file_get_contents
-     * @return  Ofx
-     * @throws \InvalidArgumentException
+     * @return Ofx
+     * @throws \Exception
      */
     public function loadFromFile($ofxFile)
     {
-        if (file_exists($ofxFile)) {
-            return $this->loadFromString(file_get_contents($ofxFile));
-        } else {
+        if (!file_exists($ofxFile)) {
             throw new \InvalidArgumentException("File '{$ofxFile}' could not be found");
         }
+
+        return $this->loadFromString(file_get_contents($ofxFile));
     }
 
     /**
@@ -40,10 +39,9 @@ class Parser
     public function loadFromString($ofxContent)
     {
         $ofxContent = utf8_encode($ofxContent);
-        $ofxContent = str_replace("<", "\n<", $ofxContent); //add linebreaks to allow XML to parse
+        $ofxContent = str_replace('<', "\n<", $ofxContent); // add line breaks to allow XML to parse
 
         $sgmlStart = stripos($ofxContent, '<OFX>');
-        $ofxHeader = trim(substr($ofxContent, 0, $sgmlStart));
         $ofxSgml = trim(substr($ofxContent, $sgmlStart));
 
         $ofxXml = $this->convertSgmlToXml($ofxSgml);
@@ -67,7 +65,7 @@ class Parser
         $xml = simplexml_load_string($xmlString);
 
         if ($errors = libxml_get_errors()) {
-            throw new \Exception("Failed to parse OFX: " . var_export($errors, true));
+            throw new \RuntimeException('Failed to parse OFX: ' . var_export($errors, true));
         }
 
         return $xml;
@@ -77,7 +75,7 @@ class Parser
      * Detect any unclosed XML tags - if they exist, close them
      *
      * @param string $line
-     * @return $line
+     * @return string
      */
     private function closeUnclosedXmlTags($line)
     {
@@ -102,12 +100,11 @@ class Parser
      */
     private function convertSgmlToXml($sgml)
     {
-        $sgml = str_replace("\r\n", "\n", $sgml);
-        $sgml = str_replace("\r", "\n", $sgml);
+        $sgml = str_replace(["\r\n", "\r"], "\n", $sgml);
 
         $lines = explode("\n", $sgml);
 
-        $xml = "";
+        $xml = '';
         foreach ($lines as $line) {
             $xml .= trim($this->closeUnclosedXmlTags($line)) . "\n";
         }

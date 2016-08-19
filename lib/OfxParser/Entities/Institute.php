@@ -4,6 +4,13 @@ namespace OfxParser\Entities;
 
 class Institute extends AbstractEntity
 {
-    public $name;
+    /**
+     * @var string
+     */
     public $id;
+
+    /**
+     * @var string
+     */
+    public $name;
 }

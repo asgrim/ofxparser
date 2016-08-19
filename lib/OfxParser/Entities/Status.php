@@ -4,7 +4,10 @@ namespace OfxParser\Entities;
 
 class Status extends AbstractEntity
 {
-    protected $codes= [
+    /**
+     * @var string[]
+     */
+    private static $codes = [
         '0'       => 'Success',
         '2000'    => 'General error',
         '15000'   => 'Must change USERPASS',
@@ -13,8 +16,19 @@ class Status extends AbstractEntity
         '15502'   => 'USERPASS Lockout'
     ];
 
+    /**
+     * @var string
+     */
     public $code;
+
+    /**
+     * @var string
+     */
     public $severity;
+
+    /**
+     * @var string
+     */
     public $message;
 
     /**
@@ -25,7 +39,7 @@ class Status extends AbstractEntity
     public function codeDesc()
     {
         // Cast code to string from SimpleXMLObject
-        $code = (string) $this->code;
-        return isset($this->codes[$code]) ? $this->codes[$code] : '';
+        $code = (string)$this->code;
+        return array_key_exists($code, self::$codes) ? self::$codes[$code] : '';
     }
 }

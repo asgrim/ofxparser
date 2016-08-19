@@ -9,7 +9,7 @@ abstract class AbstractEntity
      * to unify the API
      *
      * @param $name
-     * @return method | bool
+     * @return mixed|bool
      */
     public function __get($name)
     {
