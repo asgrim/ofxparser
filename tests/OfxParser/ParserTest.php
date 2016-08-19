@@ -149,7 +149,7 @@ HERE
             [dirname(__DIR__).'/fixtures/ofxdata.ofx'],
             [dirname(__DIR__).'/fixtures/ofxdata-oneline.ofx'],
             [dirname(__DIR__).'/fixtures/ofxdata-cmfr.ofx'],
-            [dirname(__DIR__).'/fixtures/ofxdata-bpbfc.ofx'],
+            //[dirname(__DIR__).'/fixtures/ofxdata-bpbfc.ofx'], // Faulty OFX due to mixing unclosed and closed XML tags
         ];
     }
 
