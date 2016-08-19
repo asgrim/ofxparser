@@ -100,8 +100,7 @@ class Parser
      */
     private function convertSgmlToXml($sgml)
     {
-        $sgml = str_replace("\r\n", "\n", $sgml);
-        $sgml = str_replace("\r", "\n", $sgml);
+        $sgml = str_replace(["\r\n", "\r"], "\n", $sgml);
 
         $lines = explode("\n", $sgml);
 
