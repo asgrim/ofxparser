@@ -1,16 +1,19 @@
 <?php
 
-namespace OfxParser;
+namespace OfxParserTest;
 
-require_once __DIR__ . '/../../vendor/autoload.php';
+use OfxParser\Parser;
 
+/**
+ * @covers OfxParser\Parser
+ */
 class ParserTest extends \PHPUnit_Framework_TestCase
 {
     public function testXmlLoadStringThrowsExceptionWithInvalidXml()
     {
         $invalidXml = '<invalid xml>';
 
-        $method = new \ReflectionMethod('\OfxParser\Parser', 'xmlLoadString');
+        $method = new \ReflectionMethod(Parser::class, 'xmlLoadString');
         $method->setAccessible(true);
 
         try {
@@ -23,20 +26,20 @@ class ParserTest extends \PHPUnit_Framework_TestCase
             throw $e;
         }
 
-        $this->fail('Method xmlLoadString did not raise an expected exception parsing an invalid XML string');
+        self::fail('Method xmlLoadString did not raise an expected exception parsing an invalid XML string');
     }
 
     public function testXmlLoadStringLoadsValidXml()
     {
         $validXml = '<fooRoot><foo>bar</foo></fooRoot>';
 
-        $method = new \ReflectionMethod('\OfxParser\Parser', 'xmlLoadString');
+        $method = new \ReflectionMethod(Parser::class, 'xmlLoadString');
         $method->setAccessible(true);
 
         $xml = $method->invoke(new Parser(), $validXml);
 
-        $this->assertInstanceOf('SimpleXMLElement', $xml);
-        $this->assertEquals('bar', (string)$xml->foo);
+        self::assertInstanceOf('SimpleXMLElement', $xml);
+        self::assertEquals('bar', (string)$xml->foo);
     }
 
     /**
@@ -62,12 +65,12 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function testCloseUnclosedXmlTags($expected, $input)
     {
-        $method = new \ReflectionMethod('\OfxParser\Parser', 'closeUnclosedXmlTags');
+        $method = new \ReflectionMethod(Parser::class, 'closeUnclosedXmlTags');
         $method->setAccessible(true);
 
         $parser = new Parser();
 
-        $this->assertEquals($expected, $method->invoke($parser, $input));
+        self::assertEquals($expected, $method->invoke($parser, $input));
     }
 
     public function testConvertSgmlToXmlProvider()
@@ -110,15 +113,15 @@ HERE
      */
     public function testConvertSgmlToXml($sgml, $expected)
     {
-        $method = new \ReflectionMethod('\OfxParser\Parser', 'convertSgmlToXml');
+        $method = new \ReflectionMethod(Parser::class, 'convertSgmlToXml');
         $method->setAccessible(true);
 
-        $this->assertEquals($expected, $method->invoke(new Parser, $sgml));
+        self::assertEquals($expected, $method->invoke(new Parser, $sgml));
     }
 
     public function testLoadFromFileWhenFileDoesNotExist()
     {
-        $this->setExpectedException('\InvalidArgumentException');
+        $this->expectException(\InvalidArgumentException::class);
 
         $parser = new Parser();
         $parser->loadFromFile('a non-existent file');
@@ -130,13 +133,14 @@ HERE
     public function testLoadFromFileWhenFileDoesExist($filename)
     {
         if (!file_exists($filename)) {
-            $this->markTestSkipped('Could not find data file, cannot test loadFromFile method fully');
+            self::markTestSkipped('Could not find data file, cannot test loadFromFile method fully');
         }
 
-        $parser = $this->getMockBuilder('\OfxParser\Parser')
+        /** @var Parser|\PHPUnit_Framework_MockObject_MockObject $parser */
+        $parser = $this->getMockBuilder(Parser::class)
                          ->setMethods(['loadFromString'])
                          ->getMock();
-        $parser->expects($this->once())->method('loadFromString');
+        $parser->expects(self::once())->method('loadFromString');
         $parser->loadFromFile($filename);
     }
 
@@ -149,18 +153,18 @@ HERE
             [dirname(__DIR__).'/fixtures/ofxdata.ofx'],
             [dirname(__DIR__).'/fixtures/ofxdata-oneline.ofx'],
             [dirname(__DIR__).'/fixtures/ofxdata-cmfr.ofx'],
-            //[dirname(__DIR__).'/fixtures/ofxdata-bpbfc.ofx'], // Faulty OFX due to mixing unclosed and closed XML tags
         ];
     }
 
     /**
      * @param $filename
+     * @throws \Exception
      * @dataProvider testLoadFromStringProvider
      */
     public function testLoadFromString($filename)
     {
         if (!file_exists($filename)) {
-            $this->markTestSkipped('Could not find data file, cannot test loadFromString method fully');
+            self::markTestSkipped('Could not find data file, cannot test loadFromString method fully');
         }
 
         $content = file_get_contents($filename);
