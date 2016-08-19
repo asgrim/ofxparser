@@ -24,12 +24,41 @@ class OfxTest extends \PHPUnit_Framework_TestCase
         $this->ofxData = simplexml_load_string(file_get_contents($ofxFile));
     }
 
+    public function amountConversionProvider()
+    {
+        return [
+            '1000.00' => ['1000.00', 1000.0],
+            '1000,00' => ['1000,00', 1000.0],
+            '1,000.00' => ['1,000.00', 1000.0],
+            '1.000,00' => ['1.000,00', 1000.0],
+            '-1000.00' => ['-1000.00', -1000.0],
+            '-1000,00' => ['-1000,00', -1000.0],
+            '-1,000.00' => ['-1,000.00', -1000.0],
+            '-1.000,00' => ['-1.000,00', -1000.0],
+        ];
+    }
+
+    /**
+     * @param string $input
+     * @param float $output
+     * @dataProvider amountConversionProvider
+     */
+    public function testCreateAmountFromStr($input, $output)
+    {
+        $method = new \ReflectionMethod(Ofx::class, 'createAmountFromStr');
+        $method->setAccessible(true);
+
+        $ofx = new Ofx($this->ofxData);
+
+        self::assertSame($output, $method->invoke($ofx, $input));
+    }
+
     public function testCreateDateTimeFromOFXDateFormats()
     {
         // October 5, 2008, at 1:22 and 124 milliseconds pm, Easter Standard Time
         $expectedDateTime = new \DateTime('2008-10-05 13:22:00');
 
-        $method = new \ReflectionMethod('\OfxParser\Ofx', 'createDateTimeFromStr');
+        $method = new \ReflectionMethod(Ofx::class, 'createDateTimeFromStr');
         $method->setAccessible(true);
 
         $Ofx = new Ofx($this->ofxData);

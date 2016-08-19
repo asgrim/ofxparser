@@ -278,25 +278,19 @@ class Ofx
     private function createAmountFromStr($amountString)
     {
         // 000.00 or 0,000.00
-        if (preg_match("/^-?([0-9,]+)(\.?)([0-9]{2})$/", $amountString) === 1) {
+        if (preg_match('/^-?([\d,]+)(\.?)([\d]{2})$/', $amountString) === 1) {
             return (float)preg_replace(
-                array("/([,]+)/",
-                    "/\.?([0-9]{2})$/"
-                    ),
-                array("",
-                    ".$1"),
+                ['/([,]+)/', '/\.?([\d]{2})$/'],
+                ['', '.$1'],
                 $amountString
             );
         }
 
         // 000,00 or 0.000,00
-        if (preg_match("/^-?([0-9\.]+,?[0-9]{2})$/", $amountString) === 1) {
+        if (preg_match('/^-?([\d\.]+,?[\d]{2})$/', $amountString) === 1) {
             return (float)preg_replace(
-                array("/([\.]+)/",
-                    "/,?([0-9]{2})$/"
-                    ),
-                array("",
-                    ".$1"),
+                ['/([\.]+)/', '/,?([\d]{2})$/'],
+                ['', '.$1'],
                 $amountString
             );
         }
