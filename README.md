@@ -21,12 +21,14 @@ You can access the nodes in your OFX file as follows:
 $ofxParser = new \OfxParser\Parser;
 $ofx = $ofxParser->loadFromFile('/path/to/your/bankstatement.ofx');
 
-// Get the statement start and end dates
-$startDate = $ofx->BankAccount->Statement->startDate;
-$endDate = $ofx->BankAccount->Statement->endDate;
+$bankAccount = reset($ofx->bankAccounts);
 
-// Get the statements for the current bank account
-$transactions = $ofx->BankAccount->Statement->transactions;
+// Get the statement start and end dates
+$startDate = $bankAccount->statement->startDate;
+$endDate = $bankAccount->statement->endDate;
+
+// Get the statement transactions for the account
+$transactions = $bankAccount->statement->transactions;
 ```
 
 Most common nodes are support. If you come across an inaccessible node in your OFX file, please submit a pull request!
