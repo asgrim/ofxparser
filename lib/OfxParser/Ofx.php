@@ -28,10 +28,10 @@ use OfxParser\Entities\Transaction;
 class Ofx
 {
     public $Header;
-    public $SignOn;
+    public $signOn;
     public $SignupAccountInfo;
     public $BankAccounts = [];
-    public $BankAccount;
+    public $bankAccount;
     public $Investment;
 
     /**
@@ -40,7 +40,7 @@ class Ofx
      */
     public function __construct(SimpleXMLElement $xml)
     {
-        $this->SignOn = $this->buildSignOn($xml->SIGNONMSGSRSV1->SONRS);
+        $this->signOn = $this->buildSignOn($xml->SIGNONMSGSRSV1->SONRS);
         $this->SignupAccountInfo = $this->buildAccountInfo($xml->SIGNUPMSGSRSV1->ACCTINFOTRNRS);
 
         if (isset($xml->BANKMSGSRSV1)) {
@@ -52,7 +52,7 @@ class Ofx
 
         // Set a helper if only one bank account
         if (count($this->BankAccounts) === 1) {
-            $this->BankAccount = $this->BankAccounts[0];
+            $this->bankAccount = $this->BankAccounts[0];
         }
     }
 
@@ -63,7 +63,7 @@ class Ofx
      */
     public function getTransactions()
     {
-        return $this->BankAccount->Statement->Transactions;
+        return $this->bankAccount->Statement->Transactions;
     }
 
     /**
@@ -187,7 +187,7 @@ class Ofx
         return $creditAccount;
     }
 
-    private function buildTransactions(array $transactions)
+    private function buildTransactions(\SimpleXMLElement $transactions)
     {
         $return = [];
         foreach ($transactions as $t) {

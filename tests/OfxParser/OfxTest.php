@@ -85,16 +85,16 @@ class OfxTest extends \PHPUnit_Framework_TestCase
 
     public function testBuildsSignOn()
     {
-        $Ofx = new Ofx($this->ofxData);
-        self::assertEquals('', $Ofx->SignOn->Status->message);
-        self::assertEquals('0', $Ofx->SignOn->Status->code);
-        self::assertEquals('INFO', $Ofx->SignOn->Status->severity);
-        self::assertEquals('Success', $Ofx->SignOn->Status->codeDesc);
+        $ofx = new Ofx($this->ofxData);
+        self::assertEquals('', $ofx->signOn->status->message);
+        self::assertEquals('0', $ofx->signOn->status->code);
+        self::assertEquals('INFO', $ofx->signOn->status->severity);
+        self::assertEquals('Success', $ofx->signOn->status->codeDesc);
 
-        self::assertInstanceOf('DateTime', $Ofx->SignOn->date);
-        self::assertEquals('ENG', $Ofx->SignOn->language);
-        self::assertEquals('MYBANK', $Ofx->SignOn->Institute->name);
-        self::assertEquals('01234', $Ofx->SignOn->Institute->id);
+        self::assertInstanceOf('DateTime', $ofx->signOn->date);
+        self::assertEquals('ENG', $ofx->signOn->language);
+        self::assertEquals('MYBANK', $ofx->signOn->institute->name);
+        self::assertEquals('01234', $ofx->signOn->institute->id);
     }
 
     public function testBuildsMultipleBankAccounts()
@@ -104,31 +104,31 @@ class OfxTest extends \PHPUnit_Framework_TestCase
             self::markTestSkipped('Could not find multiple account data file, cannot fully test Multiple Bank Accounts');
         }
         $multiOfxData = simplexml_load_string(file_get_contents($multiOfxFile));
-        $Ofx = new Ofx($multiOfxData);
+        $ofx = new Ofx($multiOfxData);
 
-        self::assertCount(3, $Ofx->BankAccounts);
-        self::assertEmpty($Ofx->BankAccount);
+        self::assertCount(3, $ofx->BankAccounts);
+        self::assertEmpty($ofx->bankAccount);
     }
 
     public function testBuildsBankAccount()
     {
         $Ofx = new Ofx($this->ofxData);
 
-        $Account = $Ofx->BankAccount;
-        self::assertEquals('23382938', $Account->transactionUid);
-        self::assertEquals('098-121', $Account->accountNumber);
-        self::assertEquals('987654321', $Account->routingNumber);
-        self::assertEquals('SAVINGS', $Account->accountType);
-        self::assertEquals('5250.00', $Account->balance);
-        self::assertInstanceOf('DateTime', $Account->balanceDate);
+        $bankAccount = $Ofx->bankAccount;
+        self::assertEquals('23382938', $bankAccount->transactionUid);
+        self::assertEquals('098-121', $bankAccount->accountNumber);
+        self::assertEquals('987654321', $bankAccount->routingNumber);
+        self::assertEquals('SAVINGS', $bankAccount->accountType);
+        self::assertEquals('5250.00', $bankAccount->balance);
+        self::assertInstanceOf('DateTime', $bankAccount->balanceDate);
 
-        $Statement = $Account->Statement;
-        self::assertEquals('USD', $Statement->currency);
-        self::assertInstanceOf('DateTime', $Statement->startDate);
-        self::assertInstanceOf('DateTime', $Statement->endDate);
+        $statement = $bankAccount->statement;
+        self::assertEquals('USD', $statement->currency);
+        self::assertInstanceOf('DateTime', $statement->startDate);
+        self::assertInstanceOf('DateTime', $statement->endDate);
 
-        $Transactions = $Statement->transactions;
-        self::assertCount(3, $Transactions);
+        $transactions = $statement->transactions;
+        self::assertCount(3, $transactions);
 
         $expectedTransactions = [
            [
@@ -164,7 +164,7 @@ class OfxTest extends \PHPUnit_Framework_TestCase
 
         ];
 
-        foreach ($Transactions as $i => $transaction) {
+        foreach ($transactions as $i => $transaction) {
             self::assertEquals($expectedTransactions[$i]['type'], $transaction->type);
             self::assertEquals($expectedTransactions[$i]['typeDesc'], $transaction->typeDesc);
             self::assertEquals($expectedTransactions[$i]['amount'], $transaction->amount);
