@@ -51,7 +51,7 @@ class Ofx
 
 
         // Set a helper if only one bank account
-        if (count($this->BankAccounts) == 1) {
+        if (count($this->BankAccounts) === 1) {
             $this->BankAccount = $this->BankAccounts[0];
         }
     }
