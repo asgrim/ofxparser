@@ -4,6 +4,9 @@ namespace OfxParser\Entities;
 
 class Status extends AbstractEntity
 {
+    /**
+     * @var string[]
+     */
     private static $codes = [
         '0'       => 'Success',
         '2000'    => 'General error',
@@ -13,8 +16,19 @@ class Status extends AbstractEntity
         '15502'   => 'USERPASS Lockout'
     ];
 
+    /**
+     * @var string
+     */
     public $code;
+
+    /**
+     * @var string
+     */
     public $severity;
+
+    /**
+     * @var string
+     */
     public $message;
 
     /**

@@ -27,12 +27,27 @@ use OfxParser\Entities\Transaction;
  */
 class Ofx
 {
-    public $Header;
+    /**
+     * @var SignOn
+     */
     public $signOn;
-    public $SignupAccountInfo;
-    public $BankAccounts = [];
+
+    /**
+     * @var AccountInfo[]
+     */
+    public $signupAccountInfo;
+
+    /**
+     * @var BankAccount[]
+     */
+    public $bankAccounts = [];
+
+    /**
+     * Only populated if there is only one bank account
+     * @var BankAccount|null
+     * @deprecated This will be removed in future versions
+     */
     public $bankAccount;
-    public $Investment;
 
     /**
      * @param SimpleXMLElement $xml
@@ -41,18 +56,17 @@ class Ofx
     public function __construct(SimpleXMLElement $xml)
     {
         $this->signOn = $this->buildSignOn($xml->SIGNONMSGSRSV1->SONRS);
-        $this->SignupAccountInfo = $this->buildAccountInfo($xml->SIGNUPMSGSRSV1->ACCTINFOTRNRS);
+        $this->signupAccountInfo = $this->buildAccountInfo($xml->SIGNUPMSGSRSV1->ACCTINFOTRNRS);
 
         if (isset($xml->BANKMSGSRSV1)) {
-            $this->BankAccounts = $this->buildBankAccounts($xml);
+            $this->bankAccounts = $this->buildBankAccounts($xml);
         } elseif (isset($xml->CREDITCARDMSGSRSV1)) {
-            $this->BankAccounts = $this->buildCreditAccounts($xml);
+            $this->bankAccounts = $this->buildCreditAccounts($xml);
         }
 
-
         // Set a helper if only one bank account
-        if (count($this->BankAccounts) === 1) {
-            $this->bankAccount = $this->BankAccounts[0];
+        if (count($this->bankAccounts) === 1) {
+            $this->bankAccount = $this->bankAccounts[0];
         }
     }
 
@@ -60,18 +74,19 @@ class Ofx
      * Get the transactions that have been processed
      *
      * @return array
+     * @deprecated This will be removed in future versions
      */
     public function getTransactions()
     {
-        return $this->bankAccount->Statement->Transactions;
+        return $this->bankAccount->statement->transactions;
     }
 
     /**
-     * @param $xml
+     * @param SimpleXMLElement $xml
      * @return SignOn
      * @throws \Exception
      */
-    private function buildSignOn($xml)
+    private function buildSignOn(SimpleXMLElement $xml)
     {
         $signOn = new SignOn();
         $signOn->status = $this->buildStatus($xml->STATUS);
@@ -86,12 +101,12 @@ class Ofx
     }
 
     /**
-     * @param $xml
+     * @param SimpleXMLElement|null $xml
      * @return array AccountInfo
      */
-    private function buildAccountInfo($xml)
+    private function buildAccountInfo(SimpleXMLElement $xml = null)
     {
-        if (!isset($xml->ACCTINFO)) {
+        if (null === $xml || !isset($xml->ACCTINFO)) {
             return [];
         }
 
@@ -138,11 +153,11 @@ class Ofx
     }
 
     /**
-     * @param $xml
+     * @param SimpleXMLElement $xml
      * @return BankAccount
      * @throws \Exception
      */
-    private function buildBankAccount($xml)
+    private function buildBankAccount(SimpleXMLElement $xml)
     {
         $bankAccount = new BankAccount();
         $bankAccount->transactionUid = $xml->TRNUID;
@@ -163,11 +178,11 @@ class Ofx
     }
 
     /**
-     * @param $xml
+     * @param SimpleXMLElement $xml
      * @return BankAccount
      * @throws \Exception
      */
-    private function buildCreditAccount($xml)
+    private function buildCreditAccount(SimpleXMLElement $xml)
     {
         $creditAccount = new BankAccount();
         $creditAccount->transactionUid = $xml->TRNUID;
@@ -187,33 +202,42 @@ class Ofx
         return $creditAccount;
     }
 
-    private function buildTransactions(\SimpleXMLElement $transactions)
+    /**
+     * @param SimpleXMLElement $transactions
+     * @return array
+     * @throws \Exception
+     */
+    private function buildTransactions(SimpleXMLElement $transactions)
     {
         $return = [];
         foreach ($transactions as $t) {
-            $Transaction = new Transaction();
-            $Transaction->type = (string)$t->TRNTYPE;
-            $Transaction->date = $this->createDateTimeFromStr($t->DTPOSTED);
-            $Transaction->amount = $this->createAmountFromStr($t->TRNAMT);
-            $Transaction->uniqueId = (string)$t->FITID;
-            $Transaction->name = (string)$t->NAME;
-            $Transaction->memo = (string)$t->MEMO;
-            $Transaction->sic = $t->SIC;
-            $Transaction->checkNumber = $t->CHECKNUM;
-            $return[] = $Transaction;
+            $transaction = new Transaction();
+            $transaction->type = (string)$t->TRNTYPE;
+            $transaction->date = $this->createDateTimeFromStr($t->DTPOSTED);
+            $transaction->amount = $this->createAmountFromStr($t->TRNAMT);
+            $transaction->uniqueId = (string)$t->FITID;
+            $transaction->name = (string)$t->NAME;
+            $transaction->memo = (string)$t->MEMO;
+            $transaction->sic = $t->SIC;
+            $transaction->checkNumber = $t->CHECKNUM;
+            $return[] = $transaction;
         }
 
         return $return;
     }
 
-    private function buildStatus($xml)
+    /**
+     * @param SimpleXMLElement $xml
+     * @return Status
+     */
+    private function buildStatus(SimpleXMLElement $xml)
     {
-        $Status = new Status();
-        $Status->code = $xml->CODE;
-        $Status->severity = $xml->SEVERITY;
-        $Status->message = $xml->MESSAGE;
+        $status = new Status();
+        $status->code = $xml->CODE;
+        $status->severity = $xml->SEVERITY;
+        $status->message = $xml->MESSAGE;
 
-        return $Status;
+        return $status;
     }
 
     /**

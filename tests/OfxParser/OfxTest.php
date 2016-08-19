@@ -106,7 +106,7 @@ class OfxTest extends \PHPUnit_Framework_TestCase
         $multiOfxData = simplexml_load_string(file_get_contents($multiOfxFile));
         $ofx = new Ofx($multiOfxData);
 
-        self::assertCount(3, $ofx->BankAccounts);
+        self::assertCount(3, $ofx->bankAccounts);
         self::assertEmpty($ofx->bankAccount);
     }
 

@@ -24,13 +24,44 @@ class Transaction extends AbstractEntity
         'OTHER' => 'Other',
     ];
 
+    /**
+     * @var string
+     */
     public $type;
+
+    /**
+     * @var \DateTimeInterface
+     */
     public $date;
+
+    /**
+     * @var float
+     */
     public $amount;
+
+    /**
+     * @var string
+     */
     public $uniqueId;
+
+    /**
+     * @var string
+     */
     public $name;
+
+    /**
+     * @var string
+     */
     public $memo;
+
+    /**
+     * @var string
+     */
     public $sic;
+
+    /**
+     * @var string
+     */
     public $checkNumber;
 
     /**
