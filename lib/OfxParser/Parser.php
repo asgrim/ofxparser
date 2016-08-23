@@ -39,7 +39,7 @@ class Parser
     public function loadFromString($ofxContent)
     {
         $ofxContent = utf8_encode($ofxContent);
-        $ofxContent = str_replace('<', "\n<", $ofxContent); // add line breaks to allow XML to parse
+        $ofxContent = $this->conditionallyAddNewlines($ofxContent);
 
         $sgmlStart = stripos($ofxContent, '<OFX>');
         $ofxSgml = trim(substr($ofxContent, $sgmlStart));
@@ -49,6 +49,21 @@ class Parser
         $xml = $this->xmlLoadString($ofxXml);
 
         return new Ofx($xml);
+    }
+
+    /**
+     * Detect if the OFX file is on one line. If it is, add newlines automatically.
+     *
+     * @param string $ofxContent
+     * @return string
+     */
+    private function conditionallyAddNewlines($ofxContent)
+    {
+        if (preg_match('/<OFX>.*<\/OFX>/', $ofxContent) === 1) {
+            return str_replace('<', "\n<", $ofxContent); // add line breaks to allow XML to parse
+        }
+
+        return $ofxContent;
     }
 
     /**

@@ -54,7 +54,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
     /**
      * @return array
      */
-    public function testCloseUnclosedXmlTagsProvider()
+    public function closeUnclosedXmlTagsProvider()
     {
         return [
             ['<SOMETHING>', '<SOMETHING>'],
@@ -68,7 +68,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @dataProvider testCloseUnclosedXmlTagsProvider
+     * @dataProvider closeUnclosedXmlTagsProvider
      * @param $expected
      * @param $input
      */
@@ -82,7 +82,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         self::assertEquals($expected, $method->invoke($parser, $input));
     }
 
-    public function testConvertSgmlToXmlProvider()
+    public function convertSgmlToXmlProvider()
     {
         return [
             [<<<HERE
@@ -118,7 +118,7 @@ HERE
     }
 
     /**
-     * @dataProvider testConvertSgmlToXmlProvider
+     * @dataProvider convertSgmlToXmlProvider
      */
     public function testConvertSgmlToXml($sgml, $expected)
     {
@@ -137,7 +137,7 @@ HERE
     }
 
     /**
-     * @dataProvider testLoadFromStringProvider
+     * @dataProvider loadFromStringProvider
      */
     public function testLoadFromFileWhenFileDoesExist($filename)
     {
@@ -156,20 +156,22 @@ HERE
     /**
      * @return array
      */
-    public function testLoadFromStringProvider()
+    public function loadFromStringProvider()
     {
         return [
-            [dirname(__DIR__).'/fixtures/ofxdata.ofx'],
-            [dirname(__DIR__).'/fixtures/ofxdata-oneline.ofx'],
-            [dirname(__DIR__).'/fixtures/ofxdata-cmfr.ofx'],
-            [dirname(__DIR__).'/fixtures/ofxdata-credit-card.ofx'],
+            'ofxdata.ofx' => [dirname(__DIR__).'/fixtures/ofxdata.ofx'],
+            'ofxdata-oneline.ofx' => [dirname(__DIR__).'/fixtures/ofxdata-oneline.ofx'],
+            'ofxdata-cmfr.ofx' => [dirname(__DIR__).'/fixtures/ofxdata-cmfr.ofx'],
+            'ofxdata-bb.ofx' => [dirname(__DIR__).'/fixtures/ofxdata-bb.ofx'],
+            'ofxdata-credit-card.ofx' => [dirname(__DIR__).'/fixtures/ofxdata-credit-card.ofx'],
+            'ofxdata-bpbfc.ofx' => [dirname(__DIR__).'/fixtures/ofxdata-bpbfc.ofx'],
         ];
     }
 
     /**
-     * @param $filename
+     * @param string $filename
      * @throws \Exception
-     * @dataProvider testLoadFromStringProvider
+     * @dataProvider loadFromStringProvider
      */
     public function testLoadFromString($filename)
     {

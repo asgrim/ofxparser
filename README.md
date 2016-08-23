@@ -20,7 +20,7 @@ $ composer require asgrim/ofxparser
 You can access the nodes in your OFX file as follows:
 
 ```php
-$ofxParser = new \OfxParser\Parser;
+$ofxParser = new \OfxParser\Parser();
 $ofx = $ofxParser->loadFromFile('/path/to/your/bankstatement.ofx');
 
 $bankAccount = reset($ofx->bankAccounts);
