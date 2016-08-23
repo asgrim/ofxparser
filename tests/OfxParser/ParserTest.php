@@ -159,21 +159,20 @@ HERE
     public function loadFromStringProvider()
     {
         return [
-            'ofxdata.ofx' => [dirname(__DIR__).'/fixtures/ofxdata.ofx', false],
-            'ofxdata-oneline.ofx' => [dirname(__DIR__).'/fixtures/ofxdata-oneline.ofx', true],
-            'ofxdata-cmfr.ofx' => [dirname(__DIR__).'/fixtures/ofxdata-cmfr.ofx', false],
-            'ofxdata-bb.ofx' => [dirname(__DIR__).'/fixtures/ofxdata-bb.ofx', false],
-            'ofxdata-credit-card.ofx' => [dirname(__DIR__).'/fixtures/ofxdata-credit-card.ofx', false],
+            'ofxdata.ofx' => [dirname(__DIR__).'/fixtures/ofxdata.ofx'],
+            'ofxdata-oneline.ofx' => [dirname(__DIR__).'/fixtures/ofxdata-oneline.ofx'],
+            'ofxdata-cmfr.ofx' => [dirname(__DIR__).'/fixtures/ofxdata-cmfr.ofx'],
+            'ofxdata-bb.ofx' => [dirname(__DIR__).'/fixtures/ofxdata-bb.ofx'],
+            'ofxdata-credit-card.ofx' => [dirname(__DIR__).'/fixtures/ofxdata-credit-card.ofx'],
         ];
     }
 
     /**
      * @param string $filename
-     * @param bool $shouldAddNewlines
      * @throws \Exception
      * @dataProvider loadFromStringProvider
      */
-    public function testLoadFromString($filename, $shouldAddNewlines)
+    public function testLoadFromString($filename)
     {
         if (!file_exists($filename)) {
             self::markTestSkipped('Could not find data file, cannot test loadFromString method fully');
@@ -181,7 +180,7 @@ HERE
 
         $content = file_get_contents($filename);
 
-        $parser = new Parser($shouldAddNewlines);
+        $parser = new Parser();
         $parser->loadFromString($content);
     }
 }
