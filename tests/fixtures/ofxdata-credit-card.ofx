@@ -1,0 +1,57 @@
+OFXHEADER:100
+DATA:OFXSGML
+VERSION:102
+SECURITY:NONE
+ENCODING:USASCII
+CHARSET:1252
+COMPRESSION:NONE
+OLDFILEUID:NONE
+NEWFILEUID:NONE
+<OFX>
+<SIGNONMSGSRSV1>
+    <SONRS>
+        <STATUS>
+            <CODE>0
+            <SEVERITY>INFO
+        </STATUS>
+        <DTSERVER>20160823000000
+        <LANGUAGE>ENG
+    </SONRS>
+</SIGNONMSGSRSV1>
+<CREDITCARDMSGSRSV1>
+    <CCSTMTTRNRS>
+        <TRNUID>20160823000000
+        <STATUS>
+            <CODE>0
+            <SEVERITY>INFO
+        </STATUS>
+        <CCSTMTRS>
+            <CURDEF>GBP
+            <CCACCTFROM>
+                <ACCTID>1234567891234567
+            </CCACCTFROM>
+            <BANKTRANLIST>
+                <DTSTART>20160823000000
+                <DTEND>20160823000000
+                <STMTTRN>
+                    <TRNTYPE>POS
+                    <DTPOSTED>20160823
+                    <DTUSER>20160823
+                    <TRNAMT>-100.00
+                    <FITID>ABCDEFGHIJ
+                    <REFNUM>VENDOR
+                    <NAME>VENDOR
+                </STMTTRN>
+            </BANKTRANLIST>
+            <LEDGERBAL>
+                <BALAMT>-500.00
+                <DTASOF>20160823000000
+            </LEDGERBAL>
+            <AVAILBAL>
+                <BALAMT>500.00
+                <DTASOF>20160823000000
+            </AVAILBAL>
+        </CCSTMTRS>
+    </CCSTMTTRNRS>
+</CREDITCARDMSGSRSV1>
+</OFX>

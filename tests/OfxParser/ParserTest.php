@@ -9,6 +9,15 @@ use OfxParser\Parser;
  */
 class ParserTest extends \PHPUnit_Framework_TestCase
 {
+    public function testCreditCardStatementTransactionsAreLoaded()
+    {
+        $parser = new Parser();
+        $ofx = $parser->loadFromFile(__DIR__ . '/../fixtures/ofxdata-credit-card.ofx');
+
+        $account = reset($ofx->bankAccounts);
+        self::assertSame('1234567891234567', (string)$account->accountNumber);
+    }
+
     public function testXmlLoadStringThrowsExceptionWithInvalidXml()
     {
         $invalidXml = '<invalid xml>';
@@ -153,6 +162,7 @@ HERE
             [dirname(__DIR__).'/fixtures/ofxdata.ofx'],
             [dirname(__DIR__).'/fixtures/ofxdata-oneline.ofx'],
             [dirname(__DIR__).'/fixtures/ofxdata-cmfr.ofx'],
+            [dirname(__DIR__).'/fixtures/ofxdata-credit-card.ofx'],
         ];
     }
 

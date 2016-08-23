@@ -184,12 +184,17 @@ class Ofx
      */
     private function buildCreditAccount(SimpleXMLElement $xml)
     {
+        $nodeName = 'CCACCTFROM';
+        if (!isset($xml->CCSTMTRS->$nodeName)) {
+            $nodeName = 'BANKACCTFROM';
+        }
+
         $creditAccount = new BankAccount();
         $creditAccount->transactionUid = $xml->TRNUID;
-        $creditAccount->agencyNumber = $xml->CCSTMTRS->BANKACCTFROM->BRANCHID;
-        $creditAccount->accountNumber = $xml->CCSTMTRS->BANKACCTFROM->ACCTID;
-        $creditAccount->routingNumber = $xml->CCSTMTRS->BANKACCTFROM->BANKID;
-        $creditAccount->accountType = $xml->CCSTMTRS->BANKACCTFROM->ACCTTYPE;
+        $creditAccount->agencyNumber = $xml->CCSTMTRS->$nodeName->BRANCHID;
+        $creditAccount->accountNumber = $xml->CCSTMTRS->$nodeName->ACCTID;
+        $creditAccount->routingNumber = $xml->CCSTMTRS->$nodeName->BANKID;
+        $creditAccount->accountType = $xml->CCSTMTRS->$nodeName->ACCTTYPE;
         $creditAccount->balance = $xml->CCSTMTRS->LEDGERBAL->BALAMT;
         $creditAccount->balanceDate = $this->createDateTimeFromStr($xml->CCSTMTRS->LEDGERBAL->DTASOF, true);
 
