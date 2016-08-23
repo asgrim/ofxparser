@@ -35,12 +35,6 @@ $transactions = $bankAccount->statement->transactions;
 
 Most common nodes are support. If you come across an inaccessible node in your OFX file, please submit a pull request!
 
-Note that some OFX formats require newlines to be added to parse correctly. If the OFX fails to parse, try adding the `$shouldAddNewlines` parameter boolean to the constructor for the `Parser`:
-
-```php
-$ofxParser = new \OfxParser\Parser(true);
-```
-
 ## Fork & Credits
 
 This is a fork of [grimfor/ofxparser](https://github.com/Grimfor/ofxparser) made to be framework independent. The source repo was designed for Symfony 2 framework, so credit should be given where credit due!
