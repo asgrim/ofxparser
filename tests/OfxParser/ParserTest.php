@@ -102,6 +102,7 @@ class ParserTest extends TestCase
             ['<ACCTID>XXXXXXXXXXX</ACCTID>', '<ACCTID>XXXXXXXXXXX</ACCTID>'],
             ['<ACCTID>-198.98</ACCTID>', '<ACCTID>-198.98</ACCTID>'],
             ['<ACCTID>-198.98</ACCTID>', '<ACCTID>-198.98'],
+            ['<MEMO></MEMO>', '<MEMO>'],
         ];
     }
 

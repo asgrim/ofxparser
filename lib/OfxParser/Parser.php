@@ -116,12 +116,18 @@ class Parser
      */
     private function closeUnclosedXmlTags($line)
     {
+        // Special case discovered where empty content tag wasn't closed
+        $line = trim($line);
+        if (preg_match('/<MEMO>$/', $line) === 1) {
+            return '<MEMO></MEMO>';
+        }
+
         // Matches: <SOMETHING>blah
         // Does not match: <SOMETHING>
         // Does not match: <SOMETHING>blah</SOMETHING>
         if (preg_match(
             "/<([A-Za-z0-9.]+)>([\wà-úÀ-Ú0-9\.\-\_\+\, ;:\[\]\'\&\/\\\*\(\)\+\{\|\}\!\£\$\?=@€£#%±§~`\"]+)$/",
-            trim($line),
+            $line,
             $matches
         )) {
             return "<{$matches[1]}>{$matches[2]}</{$matches[1]}>";
