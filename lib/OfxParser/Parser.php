@@ -14,6 +14,19 @@ namespace OfxParser;
 class Parser
 {
     /**
+     * @var bool
+     */
+    private $shouldAddNewlines;
+
+    /**
+     * @param bool $shouldAddNewlines Should the parser automatically add newlines when loading the OFX?
+     */
+    public function __construct($shouldAddNewlines = false)
+    {
+        $this->shouldAddNewlines = $shouldAddNewlines;
+    }
+
+    /**
      * Load an OFX file into this parser by way of a filename
      *
      * @param string $ofxFile A path that can be loaded with file_get_contents
@@ -39,7 +52,10 @@ class Parser
     public function loadFromString($ofxContent)
     {
         $ofxContent = utf8_encode($ofxContent);
-        $ofxContent = str_replace('<', "\n<", $ofxContent); // add line breaks to allow XML to parse
+
+        if ($this->shouldAddNewlines) {
+            $ofxContent = str_replace('<', "\n<", $ofxContent); // add line breaks to allow XML to parse
+        }
 
         $sgmlStart = stripos($ofxContent, '<OFX>');
         $ofxSgml = trim(substr($ofxContent, $sgmlStart));

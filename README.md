@@ -20,7 +20,7 @@ $ composer require asgrim/ofxparser
 You can access the nodes in your OFX file as follows:
 
 ```php
-$ofxParser = new \OfxParser\Parser;
+$ofxParser = new \OfxParser\Parser();
 $ofx = $ofxParser->loadFromFile('/path/to/your/bankstatement.ofx');
 
 $bankAccount = reset($ofx->bankAccounts);
@@ -34,6 +34,12 @@ $transactions = $bankAccount->statement->transactions;
 ```
 
 Most common nodes are support. If you come across an inaccessible node in your OFX file, please submit a pull request!
+
+Note that some OFX formats require newlines to be added to parse correctly. If the OFX fails to parse, try adding the `$shouldAddNewlines` parameter boolean to the constructor for the `Parser`:
+
+```php
+$ofxParser = new \OfxParser\Parser(true);
+```
 
 ## Fork & Credits
 
