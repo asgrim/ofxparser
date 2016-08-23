@@ -64,6 +64,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
             ['<ACCTID>XXXXXXXXXXX</ACCTID>', '<ACCTID>XXXXXXXXXXX</ACCTID>'],
             ['<ACCTID>-198.98</ACCTID>', '<ACCTID>-198.98</ACCTID>'],
             ['<ACCTID>-198.98</ACCTID>', '<ACCTID>-198.98'],
+            ['<MEMO></MEMO>', '<MEMO>'],
         ];
     }
 
