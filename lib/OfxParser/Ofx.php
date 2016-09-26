@@ -219,6 +219,9 @@ class Ofx
             $transaction = new Transaction();
             $transaction->type = (string)$t->TRNTYPE;
             $transaction->date = $this->createDateTimeFromStr($t->DTPOSTED);
+            if ('' !== (string)$t->DTUSER) {
+                $transaction->userInitiatedDate = $this->createDateTimeFromStr($t->DTUSER);
+            }
             $transaction->amount = $this->createAmountFromStr($t->TRNAMT);
             $transaction->uniqueId = (string)$t->FITID;
             $transaction->name = (string)$t->NAME;

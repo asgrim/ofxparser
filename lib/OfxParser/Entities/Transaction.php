@@ -30,9 +30,16 @@ class Transaction extends AbstractEntity
     public $type;
 
     /**
+     * Date the transaction was posted
      * @var \DateTimeInterface
      */
     public $date;
+
+    /**
+     * Date the user initiated the transaction, if known
+     * @var \DateTimeInterface|null
+     */
+    public $userInitiatedDate;
 
     /**
      * @var float
