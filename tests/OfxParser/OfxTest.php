@@ -174,6 +174,7 @@ class OfxTest extends \PHPUnit_Framework_TestCase
             self::assertEquals($expectedTransactions[$i]['sic'], $transaction->sic);
             self::assertEquals($expectedTransactions[$i]['checkNumber'], $transaction->checkNumber);
             self::assertInstanceOf('DateTime', $transaction->date);
+            self::assertInstanceOf('DateTime', $transaction->userInitiatedDate);
         }
     }
 }
