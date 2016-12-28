@@ -310,7 +310,7 @@ class Ofx
     private function createAmountFromStr($amountString)
     {
         // Decimal mark style (UK/US): 000.00 or 0,000.00
-        if (preg_match('/^-?([\d,]+)(\.?)([\d]{2})$/', $amountString) === 1) {
+        if (preg_match('/^-?([\d,]+)(\.)([\d]{2})$/', $amountString) === 1) {
             return (float)preg_replace(
                 ['/([,]+)/', '/\.?([\d]{2})$/'],
                 ['', '.$1'],
@@ -319,7 +319,7 @@ class Ofx
         }
 
         // European style: 000,00 or 0.000,00
-        if (preg_match('/^-?([\d\.]+,?[\d]{2})$/', $amountString) === 1) {
+        if (preg_match('/^-?([\d\.]+,[\d]{2})$/', $amountString) === 1) {
             return (float)preg_replace(
                 ['/([\.]+)/', '/,?([\d]{2})$/'],
                 ['', '.$1'],
