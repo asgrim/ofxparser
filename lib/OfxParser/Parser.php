@@ -63,6 +63,10 @@ class Parser
             return str_replace('<', "\n<", $ofxContent); // add line breaks to allow XML to parse
         }
 
+        if (preg_match('/<.+>.*<.+>/', $ofxContent) === 1) {
+            return str_replace('<', "\n<", $ofxContent); // add line breaks to allow XML to parse
+        }
+
         return $ofxContent;
     }
 
