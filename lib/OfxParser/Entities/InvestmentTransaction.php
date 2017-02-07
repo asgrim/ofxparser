@@ -44,15 +44,4 @@ class InvestmentTransaction extends AbstractEntity
      */
     public $secid;
 
-    /**
-     * Get the associated type description
-     *
-     * @return string
-     */
-    public function typeDesc()
-    {
-        // Cast SimpleXMLObject to string
-        $type = (string)$this->type;
-        return array_key_exists($type, self::$types) ? self::$types[$type] : '';
-    }
 }

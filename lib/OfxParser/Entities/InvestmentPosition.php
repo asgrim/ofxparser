@@ -26,7 +26,7 @@ class InvestmentPosition extends AbstractEntity
     /**
      * @var float
      */
-    public $date_value;
+    public $dateValue;
 
     /**
      * @var string
@@ -41,23 +41,11 @@ class InvestmentPosition extends AbstractEntity
     /**
      * @var string
      */
-    public $unitprice;
+    public $unitPrice;
 
     /**
      * @var string
      */
     public $secid;
 
-
-    /**
-     * Get the associated type description
-     *
-     * @return string
-     */
-    public function typeDesc()
-    {
-        // Cast SimpleXMLObject to string
-        $type = (string)$this->type;
-        return array_key_exists($type, self::$types) ? self::$types[$type] : '';
-    }
 }

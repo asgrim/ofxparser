@@ -193,8 +193,8 @@ class Ofx
 
         $bankAccount->statement = new Statement();
         $bankAccount->statement->currency = $xml->STMTRS->CURDEF;
-        $bankAccount->statement->startDate = $this->createDateTimeFromStr($xml->STMTRS->BANKTRANLIST->DTSTART, true);
-        $bankAccount->statement->endDate = $this->createDateTimeFromStr($xml->STMTRS->BANKTRANLIST->DTEND, true);
+        $bankAccount->statement->startDate = $this->createDateTimeFromStr($xml->STMTRS->BANKTRANLIST->DTSTART);
+        $bankAccount->statement->endDate = $this->createDateTimeFromStr($xml->STMTRS->BANKTRANLIST->DTEND);
         $bankAccount->statement->transactions = $this->buildTransactions($xml->STMTRS->BANKTRANLIST->STMTTRN);
 
         return $bankAccount;
@@ -223,8 +223,8 @@ class Ofx
 
         $creditAccount->statement = new Statement();
         $creditAccount->statement->currency = $xml->CCSTMTRS->CURDEF;
-        $creditAccount->statement->startDate = $this->createDateTimeFromStr($xml->CCSTMTRS->BANKTRANLIST->DTSTART, true);
-        $creditAccount->statement->endDate = $this->createDateTimeFromStr($xml->CCSTMTRS->BANKTRANLIST->DTEND, true);
+        $creditAccount->statement->startDate = $this->createDateTimeFromStr($xml->CCSTMTRS->BANKTRANLIST->DTSTART);
+        $creditAccount->statement->endDate = $this->createDateTimeFromStr($xml->CCSTMTRS->BANKTRANLIST->DTEND);
         $creditAccount->statement->transactions = $this->buildTransactions($xml->CCSTMTRS->BANKTRANLIST->STMTTRN);
 
         return $creditAccount;
@@ -238,9 +238,6 @@ class Ofx
     private function buildInvestmentAccount(SimpleXMLElement $xml)
     {
         $nodeName = 'INVACCTFROM';
-        if (!isset($xml->INVSTMTRS->$nodeName)) {
-            $nodeName = 'BANKACCTFROM';
-        }
 
         $investmentAccount = new BankAccount();
         $investmentAccount->transactionUid = $xml->TRNUID;
@@ -298,13 +295,13 @@ class Ofx
         foreach ($transactions as $t) {
             $transaction = new InvestmentPosition();
             $transaction->type = (string)$t->INVPOS->POSTYPE;
-            $transaction->date_value = $this->createDateTimeFromStr($t->INVPOS->DTPRICEASOF, true);
+            $transaction->dateValue = $this->createDateTimeFromStr($t->INVPOS->DTPRICEASOF, true);
 
             $transaction->total = (float) $this->createAmountFromStr($t->INVPOS->MKTVAL);
             $transaction->memo = (string)$t->INVPOS->MEMO;
             $transaction->secid = (string) $t->INVPOS->SECID->UNIQUEID;
             $transaction->units = (float) $t->INVPOS->UNITS;
-            $transaction->unitprice = (float) $t->INVPOS->UNITPRICE;
+            $transaction->unitPrice = (float) $t->INVPOS->UNITPRICE;
             
             $return[] = $transaction;
         }
@@ -458,7 +455,7 @@ class Ofx
             }
         }
 
-        //throw new \RuntimeException('Failed to initialize DateTime for string: ' . $dateString);
+        throw new \RuntimeException('Failed to initialize DateTime for string: ' . $dateString);
     }
 
     /**
