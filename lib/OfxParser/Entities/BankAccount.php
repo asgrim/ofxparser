@@ -30,6 +30,11 @@ class BankAccount extends AbstractEntity
     public $routingNumber;
 
     /**
+     * @var string
+     */
+    public $brokerId;
+
+    /**
      * @var Statement
      */
     public $statement;

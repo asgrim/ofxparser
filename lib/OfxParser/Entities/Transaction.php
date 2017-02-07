@@ -72,6 +72,31 @@ class Transaction extends AbstractEntity
     public $checkNumber;
 
     /**
+     * @var string
+     */
+    public $units;
+
+    /**
+     * @var string
+     */
+    public $unitprice;
+
+    /**
+     * @var string
+     */
+    public $marketvalue;
+
+    /**
+     * @var string
+     */
+    public $secid;
+
+    /**
+     * @var string
+     */
+    public $fees;
+
+    /**
      * Get the associated type description
      *
      * @return string

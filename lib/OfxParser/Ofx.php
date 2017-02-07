@@ -10,7 +10,9 @@ use OfxParser\Entities\SignOn;
 use OfxParser\Entities\Statement;
 use OfxParser\Entities\Status;
 use OfxParser\Entities\Transaction;
-
+use OfxParser\Entities\InvestmentTransaction;
+use OfxParser\Entities\HoldingsInfo;
+use OfxParser\Entities\InvestmentPosition;
 /**
  * The OFX object
  *
@@ -62,6 +64,10 @@ class Ofx
             $this->bankAccounts = $this->buildBankAccounts($xml);
         } elseif (isset($xml->CREDITCARDMSGSRSV1)) {
             $this->bankAccounts = $this->buildCreditAccounts($xml);
+        } elseif (isset($xml->INVSTMTMSGSRSV1)) {
+            $this->bankAccounts = $this->buildInvestmentAccounts($xml);
+        } elseif (isset($xml->SECLISTMSGSRSV1)) {
+            $this->bankAccounts = $this->buildInvestmentHoldings($xml);
         }
 
         // Set a helper if only one bank account
@@ -152,6 +158,23 @@ class Ofx
         return $bankAccounts;
     }
 
+
+    /**
+     * @param SimpleXMLElement $xml
+     * @return array
+     * @throws \Exception
+     */
+    private function buildInvestmentAccounts(SimpleXMLElement $xml)
+    {
+        // Loop through the bank accounts
+        $bankAccounts = [];
+        foreach ($xml->INVSTMTMSGSRSV1->INVSTMTTRNRS as $accountStatement) {
+            $bankAccounts[] = $this->buildInvestmentAccount($accountStatement);
+        }
+        return $bankAccounts;
+    }
+
+
     /**
      * @param SimpleXMLElement $xml
      * @return BankAccount
@@ -170,8 +193,8 @@ class Ofx
 
         $bankAccount->statement = new Statement();
         $bankAccount->statement->currency = $xml->STMTRS->CURDEF;
-        $bankAccount->statement->startDate = $this->createDateTimeFromStr($xml->STMTRS->BANKTRANLIST->DTSTART);
-        $bankAccount->statement->endDate = $this->createDateTimeFromStr($xml->STMTRS->BANKTRANLIST->DTEND);
+        $bankAccount->statement->startDate = $this->createDateTimeFromStr($xml->STMTRS->BANKTRANLIST->DTSTART, true);
+        $bankAccount->statement->endDate = $this->createDateTimeFromStr($xml->STMTRS->BANKTRANLIST->DTEND, true);
         $bankAccount->statement->transactions = $this->buildTransactions($xml->STMTRS->BANKTRANLIST->STMTTRN);
 
         return $bankAccount;
@@ -200,12 +223,155 @@ class Ofx
 
         $creditAccount->statement = new Statement();
         $creditAccount->statement->currency = $xml->CCSTMTRS->CURDEF;
-        $creditAccount->statement->startDate = $this->createDateTimeFromStr($xml->CCSTMTRS->BANKTRANLIST->DTSTART);
-        $creditAccount->statement->endDate = $this->createDateTimeFromStr($xml->CCSTMTRS->BANKTRANLIST->DTEND);
+        $creditAccount->statement->startDate = $this->createDateTimeFromStr($xml->CCSTMTRS->BANKTRANLIST->DTSTART, true);
+        $creditAccount->statement->endDate = $this->createDateTimeFromStr($xml->CCSTMTRS->BANKTRANLIST->DTEND, true);
         $creditAccount->statement->transactions = $this->buildTransactions($xml->CCSTMTRS->BANKTRANLIST->STMTTRN);
 
         return $creditAccount;
     }
+
+    /**
+     * @param SimpleXMLElement $xml
+     * @return BankAccount
+     * @throws \Exception
+     */
+    private function buildInvestmentAccount(SimpleXMLElement $xml)
+    {
+        $nodeName = 'INVACCTFROM';
+        if (!isset($xml->INVSTMTRS->$nodeName)) {
+            $nodeName = 'BANKACCTFROM';
+        }
+
+        $investmentAccount = new BankAccount();
+        $investmentAccount->transactionUid = $xml->TRNUID;
+        $investmentAccount->accountNumber = $xml->INVSTMTRS->$nodeName->ACCTID;
+        $investmentAccount->brokerId = $xml->INVSTMTRS->$nodeName->BROKERID;
+        $investmentAccount->balance = $xml->INVSTMTRS->INVBAL->AVAILCASH;
+        $investmentAccount->balanceDate = $this->createDateTimeFromStr($xml->INVSTMTRS->LEDGERBAL->DTASOF, true);
+
+        $investmentAccount->statement = new Statement();
+        $investmentAccount->statement->currency = $xml->INVSTMTRS->CURDEF;
+        $investmentAccount->statement->startDate = $this->createDateTimeFromStr($xml->INVSTMTRS->INVTRANLIST->DTSTART, true);
+        $investmentAccount->statement->endDate = $this->createDateTimeFromStr($xml->INVSTMTRS->INVTRANLIST->DTEND, true);
+        $investmentAccount->statement->transactions->buyOtherTransactions = $this->buildBuyTransactions($xml->INVSTMTRS->INVTRANLIST->BUYOTHER);
+        $investmentAccount->statement->transactions->buyStockTransactions = $this->buildBuyTransactions($xml->INVSTMTRS->INVTRANLIST->BUYSTOCK);
+
+        $investmentAccount->statement->transactions->incomeTransactions = $this->buildIncomeTransactions($xml->INVSTMTRS->INVTRANLIST->INCOME);
+        $investmentAccount->statement->transactions->stockPositions = $this->buildStockPositions($xml->INVSTMTRS->INVPOSLIST->POSSTOCK);
+
+        return $investmentAccount;
+    }
+
+
+    /**
+     * @param SimpleXMLElement $positions
+     * @return array
+     * @throws \Exception
+     */
+    private function buildHoldingsInfo(SimpleXMLElement $positions)
+    {
+        $return = [];
+        foreach ($postions as $p) {
+            $positions = new HoldingsInfo();
+            $positions->type = (string) $p->STOCKINFO->STOCKTYPE;
+            $positions->secid = (string) $p->STOCKINFO->SECID->UNIQUEID;
+
+            $positions->name = (string) $p->STOCKINFO->SECNAME;
+            $positions->ticker = (string) $p->STOCKINFO->TICKER;
+            $positions->yield = (float) $p->STOCKINFO->YIELD;
+            
+            $return[] = $positions;
+        }
+
+        return $return;
+    }
+
+
+    /**
+     * @param SimpleXMLElement $transactions
+     * @return array
+     * @throws \Exception
+     */
+    private function buildStockPositions(SimpleXMLElement $transactions)
+    {
+        $return = [];
+        foreach ($transactions as $t) {
+            $transaction = new InvestmentPosition();
+            $transaction->type = (string)$t->INVPOS->POSTYPE;
+            $transaction->date_value = $this->createDateTimeFromStr($t->INVPOS->DTPRICEASOF, true);
+
+            $transaction->total = (float) $this->createAmountFromStr($t->INVPOS->MKTVAL);
+            $transaction->memo = (string)$t->INVPOS->MEMO;
+            $transaction->secid = (string) $t->INVPOS->SECID->UNIQUEID;
+            $transaction->units = (float) $t->INVPOS->UNITS;
+            $transaction->unitprice = (float) $t->INVPOS->UNITPRICE;
+            
+            $return[] = $transaction;
+        }
+
+        return $return;
+    }
+
+
+    /**
+     * @param SimpleXMLElement $transactions
+     * @return array
+     * @throws \Exception
+     */
+    private function buildIncomeTransactions(SimpleXMLElement $transactions)
+    {
+        $return = [];
+        foreach ($transactions as $t) {
+            $transaction = new InvestmentTransaction();
+            $transaction->type = (string)$t->INCOMETYPE;
+            $transaction->date = $this->createDateTimeFromStr($t->INVTRAN->DTTRADE);
+            
+            if ('' !== (string)$t->INVTRAN->DTUSER) {
+                $transaction->userInitiatedDate = $this->createDateTimeFromStr($t->INVTRAN->DTUSER);
+            }
+
+            $transaction->amount = (float) $this->createAmountFromStr($t->TOTAL);
+            $transaction->uniqueId = (string)$t->INVTRAN->FITID;
+            $transaction->memo = (string)$t->INVTRAN->MEMO;
+            $transaction->secid = (string) $t->SECID->UNIQUEID;
+            $return[] = $transaction;
+        }
+
+        return $return;
+    }
+
+
+    /**
+     * @param SimpleXMLElement $transactions
+     * @return array
+     * @throws \Exception
+     */
+    private function buildBuyTransactions(SimpleXMLElement $transactions)
+    {
+        $return = [];
+        foreach ($transactions as $t) {
+            $transaction = new InvestmentTransaction();
+            $transaction->type = (string)$t->BUYTYPE;
+            $transaction->date = $this->createDateTimeFromStr($t->INVBUY->INVTRAN->DTTRADE);
+            $transaction->date_settle = $this->createDateTimeFromStr($t->INVBUY->INVTRAN->DTSETTLE);
+            
+            if ('' !== (string)$t->INVBUY->INVTRAN->DTUSER) {
+                $transaction->userInitiatedDate = $this->createDateTimeFromStr($t->INVBUY->INVTRAN->DTUSER);
+            }
+
+            $transaction->amount = (float) $t->INVBUY->TOTAL;
+            $transaction->uniqueId = (string) $t->INVBUY->INVTRAN->FITID;
+            $transaction->memo = (string) $t->INVBUY->INVTRAN->MEMO;
+            $transaction->secid = (string) $t->INVBUY->SECID->UNIQUEID;
+            $transaction->units = (float) $t->INVBUY->UNITS;
+            $transaction->unitprice = (float) $t->INVBUY->UNITPRICE;
+            $transaction->fees = (float) $t->INVBUY->FEES;
+            $return[] = $transaction;
+        }
+
+        return $return;
+    }
+
 
     /**
      * @param SimpleXMLElement $transactions
@@ -218,11 +384,11 @@ class Ofx
         foreach ($transactions as $t) {
             $transaction = new Transaction();
             $transaction->type = (string)$t->TRNTYPE;
-            $transaction->date = $this->createDateTimeFromStr($t->DTPOSTED);
+            $transaction->date = $this->createDateTimeFromStr($t->DTPOSTED, true);
             if ('' !== (string)$t->DTUSER) {
-                $transaction->userInitiatedDate = $this->createDateTimeFromStr($t->DTUSER);
+                $transaction->userInitiatedDate = $this->createDateTimeFromStr($t->DTUSER, true);
             }
-            $transaction->amount = $this->createAmountFromStr($t->TRNAMT);
+            $transaction->amount = $this->createAmountFromStr($t->TRNAMT, true);
             $transaction->uniqueId = (string)$t->FITID;
             $transaction->name = (string)$t->NAME;
             $transaction->memo = (string)$t->MEMO;
@@ -292,7 +458,7 @@ class Ofx
             }
         }
 
-        throw new \RuntimeException('Failed to initialize DateTime for string: ' . $dateString);
+        //throw new \RuntimeException('Failed to initialize DateTime for string: ' . $dateString);
     }
 
     /**
