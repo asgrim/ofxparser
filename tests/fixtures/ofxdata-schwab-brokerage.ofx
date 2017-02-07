@@ -1,0 +1,461 @@
+OFXHEADER:100
+DATA:OFXSGML
+VERSION:102
+SECURITY:NONE
+ENCODING:USASCII
+CHARSET:1252
+COMPRESSION:NONE
+OLDFILEUID:NONE
+NEWFILEUID:42e45d2f2af447c1a5d349340379ca9e
+
+<OFX>
+  <SIGNONMSGSRSV1>
+    <SONRS>
+      <STATUS>
+        <CODE>0
+        <SEVERITY>INFO
+        <MESSAGE>SUCCESS
+      </STATUS>
+      <DTSERVER>20170206182255
+      <LANGUAGE>ENG
+      <FI>
+        <ORG>ISC
+        <FID>5104
+      </FI>
+    </SONRS>
+  </SIGNONMSGSRSV1>
+  <INVSTMTMSGSRSV1>
+    <INVSTMTTRNRS>
+      <TRNUID>400c0cb71ec8404e97bed5007174dbba
+      <STATUS>
+        <CODE>0
+        <SEVERITY>INFO
+        <MESSAGE>SUCCESS
+      </STATUS>
+      <CLTCOOKIE>4
+      <INVSTMTRS>
+        <DTASOF>20170206
+        <CURDEF>USD
+        <INVACCTFROM>
+          <BROKERID>SCHWAB.COM
+          <ACCTID>00000000
+        </INVACCTFROM>
+        <INVTRANLIST>
+          <DTSTART>20170107
+          <DTEND>20170205120000
+          <BUYOTHER>
+            <INVBUY>
+              <INVTRAN>
+                <FITID>000000002017020112000020170201224327580739145
+                <DTTRADE>20170201120000
+                <MEMO>Reinvest of POWERSHARES PREFERRED   PORTFOLIO ETF
+              </INVTRAN>
+              <SECID>
+                <UNIQUEID>73936T565
+                <UNIQUEIDTYPE>CUSIP
+              </SECID>
+              <UNITS>0.0048
+              <UNITPRICE>14.5799
+              <TOTAL>-0.07
+              <SUBACCTSEC>CASH
+              <SUBACCTFUND>CASH
+            </INVBUY>
+          </BUYOTHER>
+          <BUYOTHER>
+            <INVBUY>
+              <INVTRAN>
+                <FITID>000000002017020112000020170201224327580737144
+                <DTTRADE>20170201120000
+                <MEMO>Reinvest of POWERSHARES PREFERRED   PORTFOLIO ETF
+              </INVTRAN>
+              <SECID>
+                <UNIQUEID>73936T565
+                <UNIQUEIDTYPE>CUSIP
+              </SECID>
+              <UNITS>0.0096
+              <UNITPRICE>14.5799
+              <TOTAL>-0.14
+              <SUBACCTSEC>CASH
+              <SUBACCTFUND>CASH
+            </INVBUY>
+          </BUYOTHER>
+          <INCOME>
+            <INVTRAN>
+              <FITID>0000000020170131120000201701312223080748291
+              <DTTRADE>20170131120000
+              <MEMO>POWERSHARES PREFERRED   PORTFOLIO ETF
+            </INVTRAN>
+            <SECID>
+              <UNIQUEID>73936T565
+              <UNIQUEIDTYPE>CUSIP
+            </SECID>
+            <INCOMETYPE>DIV
+            <TOTAL>0.07
+            <SUBACCTSEC>CASH
+            <SUBACCTFUND>CASH
+          </INCOME>
+          <INCOME>
+            <INVTRAN>
+              <FITID>0000000020170131120000201701312223080748281
+              <DTTRADE>20170131120000
+              <MEMO>POWERSHARES PREFERRED   PORTFOLIO ETF
+            </INVTRAN>
+            <SECID>
+              <UNIQUEID>73936T565
+              <UNIQUEIDTYPE>CUSIP
+            </SECID>
+            <INCOMETYPE>DIV
+            <TOTAL>0.14
+            <SUBACCTSEC>CASH
+            <SUBACCTFUND>CASH
+          </INCOME>
+          <BUYSTOCK>
+            <INVBUY>
+              <INVTRAN>
+                <FITID>00000000201701181200002017011813201357502010
+                <DTTRADE>20170118120000
+                <DTSETTLE>20170123120000
+                <MEMO>POWERSHARES PREFERRED   PORTFOLIO ETF
+              </INVTRAN>
+              <SECID>
+                <UNIQUEID>73936T565
+                <UNIQUEIDTYPE>CUSIP
+              </SECID>
+              <UNITS>1.0000
+              <UNITPRICE>14.5200
+              <FEES>0.00
+              <TOTAL>-14.52
+              <SUBACCTSEC>CASH
+              <SUBACCTFUND>CASH
+            </INVBUY>
+            <BUYTYPE>BUY
+          </BUYSTOCK>
+          <BUYSTOCK>
+            <INVBUY>
+              <INVTRAN>
+                <FITID>000000002017011812000020170118100815858072529
+                <DTTRADE>20170118120000
+                <DTSETTLE>20170123120000
+                <MEMO>SCHWAB US BROAD MARKET  ETF
+              </INVTRAN>
+              <SECID>
+                <UNIQUEID>808524102
+                <UNIQUEIDTYPE>CUSIP
+              </SECID>
+              <UNITS>2.0000
+              <UNITPRICE>54.8800
+              <FEES>0.00
+              <TOTAL>-109.76
+              <SUBACCTSEC>CASH
+              <SUBACCTFUND>CASH
+            </INVBUY>
+            <BUYTYPE>BUY
+          </BUYSTOCK>
+          <BUYSTOCK>
+            <INVBUY>
+              <INVTRAN>
+                <FITID>00000000201701181200002017011810034716799110
+                <DTTRADE>20170118120000
+                <DTSETTLE>20170123120000
+                <MEMO>SCHWAB EMERGING MARKETS EQUITY ETF
+              </INVTRAN>
+              <SECID>
+                <UNIQUEID>808524706
+                <UNIQUEIDTYPE>CUSIP
+              </SECID>
+              <UNITS>1.0000
+              <UNITPRICE>22.4600
+              <FEES>0.00
+              <TOTAL>-22.46
+              <SUBACCTSEC>CASH
+              <SUBACCTFUND>CASH
+            </INVBUY>
+            <BUYTYPE>BUY
+          </BUYSTOCK>
+          <INVBANKTRAN>
+            <STMTTRN>
+              <TRNTYPE>CREDIT
+              <DTPOSTED>20170118120000
+              <DTAVAIL>20170118120000
+              <TRNAMT>151.62
+              <FITID>0000000020170118120000201701180552448211001516
+              <CORRECTACTION>REPLACE
+              <NAME>TRANSFER FUNDS FROM SCHWAB BANK
+              <MEMO>TRANSFER FUNDS FROM SCHWAB BANK - 440024091645
+            </STMTTRN>
+            <SUBACCTFUND>CASH
+          </INVBANKTRAN>
+        </INVTRANLIST>
+        <INVPOSLIST>
+          <POSSTOCK>
+            <INVPOS>
+              <SECID>
+                <UNIQUEID>73936T565
+                <UNIQUEIDTYPE>CUSIP
+              </SECID>
+              <HELDINACCT>OTHER
+              <POSTYPE>LONG
+              <UNITS>1.0000
+              <UNITPRICE>14.6800
+              <MKTVAL>14.68
+              <DTPRICEASOF>20170205210000
+              <MEMO>POWERSHARES PREFERRED   PORTFOLIO ETF
+            </INVPOS>
+          </POSSTOCK>
+          <POSSTOCK>
+            <INVPOS>
+              <SECID>
+                <UNIQUEID>73936T565
+                <UNIQUEIDTYPE>CUSIP
+              </SECID>
+              <HELDINACCT>OTHER
+              <POSTYPE>LONG
+              <UNITS>3.0394
+              <UNITPRICE>14.6800
+              <MKTVAL>44.62
+              <DTPRICEASOF>20170205210000
+              <MEMO>POWERSHARES PREFERRED   PORTFOLIO ETF
+            </INVPOS>
+          </POSSTOCK>
+          <POSSTOCK>
+            <INVPOS>
+              <SECID>
+                <UNIQUEID>808524706
+                <UNIQUEIDTYPE>CUSIP
+              </SECID>
+              <HELDINACCT>OTHER
+              <POSTYPE>LONG
+              <UNITS>11.0000
+              <UNITPRICE>23.0500
+              <MKTVAL>253.55
+              <DTPRICEASOF>20170205210000
+              <MEMO>SCHWAB EMERGING MARKETS EQUITY ETF
+            </INVPOS>
+          </POSSTOCK>
+          <POSSTOCK>
+            <INVPOS>
+              <SECID>
+                <UNIQUEID>808524805
+                <UNIQUEIDTYPE>CUSIP
+              </SECID>
+              <HELDINACCT>OTHER
+              <POSTYPE>LONG
+              <UNITS>8.0000
+              <UNITPRICE>28.7400
+              <MKTVAL>229.92
+              <DTPRICEASOF>20170205210000
+              <MEMO>SCHWAB INTERNATIONAL    EQUITY ETF
+            </INVPOS>
+          </POSSTOCK>
+          <POSSTOCK>
+            <INVPOS>
+              <SECID>
+                <UNIQUEID>808524102
+                <UNIQUEIDTYPE>CUSIP
+              </SECID>
+              <HELDINACCT>OTHER
+              <POSTYPE>LONG
+              <UNITS>8.0000
+              <UNITPRICE>55.5400
+              <MKTVAL>444.32
+              <DTPRICEASOF>20170205210000
+              <MEMO>SCHWAB US BROAD MARKET  ETF
+            </INVPOS>
+          </POSSTOCK>
+          <POSSTOCK>
+            <INVPOS>
+              <SECID>
+                <UNIQUEID>808524797
+                <UNIQUEIDTYPE>CUSIP
+              </SECID>
+              <HELDINACCT>OTHER
+              <POSTYPE>LONG
+              <UNITS>45.4866
+              <UNITPRICE>43.3600
+              <MKTVAL>1972.30
+              <DTPRICEASOF>20170205210000
+              <MEMO>SCHWAB US DIVIDEND      EQUITY ETF
+            </INVPOS>
+          </POSSTOCK>
+          <POSSTOCK>
+            <INVPOS>
+              <SECID>
+                <UNIQUEID>808524201
+                <UNIQUEIDTYPE>CUSIP
+              </SECID>
+              <HELDINACCT>OTHER
+              <POSTYPE>LONG
+              <UNITS>4.0000
+              <UNITPRICE>54.6800
+              <MKTVAL>218.72
+              <DTPRICEASOF>20170205210000
+              <MEMO>SCHWAB US LARGE CAP ETF
+            </INVPOS>
+          </POSSTOCK>
+        </INVPOSLIST>
+        <INVBAL>
+          <AVAILCASH>4.88
+          <MARGINBALANCE>4.88
+          <SHORTBALANCE>0.00
+          <BUYPOWER>4.88
+          <BALLIST>
+            <BAL>
+              <NAME>Cash Account Long
+              <DESC>Value of Securities held in Cash sub Account
+              <BALTYPE>DOLLAR
+              <VALUE>29.26
+            </BAL>
+            <BAL>
+              <NAME>Margin Account Long
+              <DESC>Value of Securities held in Margin sub Account
+              <BALTYPE>DOLLAR
+              <VALUE>3154.74
+            </BAL>
+            <BAL>
+              <NAME>Option Account Market Value
+              <DESC>Value of Options positions held in the Option sub Account
+              <BALTYPE>DOLLAR
+              <VALUE>0.00
+            </BAL>
+            <BAL>
+              <NAME>Schwab One Limit
+              <DESC>The maximum amount you can withdraw from your SchwabOne Account
+              <BALTYPE>DOLLAR
+              <VALUE>4.88
+            </BAL>
+            <BAL>
+              <NAME>Margin Account Equity
+              <DESC>The value of securities and funds in the Margin sub Accounts
+              <BALTYPE>DOLLAR
+              <VALUE>3159.62
+            </BAL>
+            <BAL>
+              <NAME>Equity Percent
+              <DESC>Margin Account Equity divided by the market value of the Margin sub Account
+              <BALTYPE>PERCENT
+              <VALUE>100.00
+            </BAL>
+            <BAL>
+              <NAME>SMA
+              <DESC>Special Memorandum Account authorized by the Federal Reserve Board
+              <BALTYPE>DOLLAR
+              <VALUE>1596.00
+            </BAL>
+            <BAL>
+              <NAME>MTD Div and Interest
+              <DESC>The amount of dividends and interest declared for securities and not yet paid
+              <BALTYPE>DOLLAR
+              <VALUE>0.00
+            </BAL>
+            <BAL>
+              <NAME>MTD Interest Owed
+              <DESC>Margin interest due Schwab for the period
+              <BALTYPE>DOLLAR
+              <VALUE>0.00
+            </BAL>
+            <BAL>
+              <NAME>Total Account Value
+              <DESC>Account Net Worth
+              <BALTYPE>DOLLAR
+              <VALUE>3182.99
+            </BAL>
+            <BAL>
+              <NAME>Day Change Dollar
+              <DESC>Net Worth Change
+              <BALTYPE>DOLLAR
+              <VALUE>-5.89
+            </BAL>
+            <BAL>
+              <NAME>Day Change Percent
+              <DESC>Net Worth Change Percent
+              <BALTYPE>PERCENT
+              <VALUE>-0.18
+            </BAL>
+            <BAL>
+              <NAME>Cash and Cash Investments
+              <DESC>Total Funds Balance in the account
+              <BALTYPE>DOLLAR
+              <VALUE>4.88
+            </BAL>
+          </BALLIST>
+        </INVBAL>
+      </INVSTMTRS>
+    </INVSTMTTRNRS>
+  </INVSTMTMSGSRSV1>
+  <SECLISTMSGSRSV1>
+    <SECLIST>
+      <STOCKINFO>
+        <SECINFO>
+          <SECID>
+            <UNIQUEID>73936T565
+            <UNIQUEIDTYPE>CUSIP
+          </SECID>
+          <SECNAME>POWERSHARES PREFERRED   PORTFOLIO ETF
+          <TICKER>PGX
+        </SECINFO>
+        <STOCKTYPE>OTHER
+        <YIELD>0.0000
+      </STOCKINFO>
+      <STOCKINFO>
+        <SECINFO>
+          <SECID>
+            <UNIQUEID>808524102
+            <UNIQUEIDTYPE>CUSIP
+          </SECID>
+          <SECNAME>SCHWAB US BROAD MARKET  ETF
+          <TICKER>SCHB
+        </SECINFO>
+        <STOCKTYPE>OTHER
+        <YIELD>0.0000
+      </STOCKINFO>
+      <STOCKINFO>
+        <SECINFO>
+          <SECID>
+            <UNIQUEID>808524706
+            <UNIQUEIDTYPE>CUSIP
+          </SECID>
+          <SECNAME>SCHWAB EMERGING MARKETS EQUITY ETF
+          <TICKER>SCHE
+        </SECINFO>
+        <STOCKTYPE>OTHER
+        <YIELD>0.0000
+      </STOCKINFO>
+      <STOCKINFO>
+        <SECINFO>
+          <SECID>
+            <UNIQUEID>808524805
+            <UNIQUEIDTYPE>CUSIP
+          </SECID>
+          <SECNAME>SCHWAB INTERNATIONAL    EQUITY ETF
+          <TICKER>SCHF
+        </SECINFO>
+        <STOCKTYPE>OTHER
+        <YIELD>0.0000
+      </STOCKINFO>
+      <STOCKINFO>
+        <SECINFO>
+          <SECID>
+            <UNIQUEID>808524797
+            <UNIQUEIDTYPE>CUSIP
+          </SECID>
+          <SECNAME>SCHWAB US DIVIDEND      EQUITY ETF
+          <TICKER>SCHD
+        </SECINFO>
+        <STOCKTYPE>OTHER
+        <YIELD>0.0000
+      </STOCKINFO>
+      <STOCKINFO>
+        <SECINFO>
+          <SECID>
+            <UNIQUEID>808524201
+            <UNIQUEIDTYPE>CUSIP
+          </SECID>
+          <SECNAME>SCHWAB US LARGE CAP ETF
+          <TICKER>SCHX
+        </SECINFO>
+        <STOCKTYPE>OTHER
+        <YIELD>0.0000
+      </STOCKINFO>
+    </SECLIST>
+  </SECLISTMSGSRSV1>
+</OFX>
