@@ -64,6 +64,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
             ['<ACCTID>XXXXXXXXXXX</ACCTID>', '<ACCTID>XXXXXXXXXXX</ACCTID>'],
             ['<ACCTID>-198.98</ACCTID>', '<ACCTID>-198.98</ACCTID>'],
             ['<ACCTID>-198.98</ACCTID>', '<ACCTID>-198.98'],
+            ['<MEMO></MEMO>', '<MEMO>'],
         ];
     }
 
@@ -166,6 +167,7 @@ HERE
             'ofxdata-bb-two-stmtrs.ofx' => [dirname(__DIR__).'/fixtures/ofxdata-bb-two-stmtrs.ofx'],
             'ofxdata-credit-card.ofx' => [dirname(__DIR__).'/fixtures/ofxdata-credit-card.ofx'],
             'ofxdata-bpbfc.ofx' => [dirname(__DIR__).'/fixtures/ofxdata-bpbfc.ofx'],
+            'ofxdata-google.ofx' => [dirname(__DIR__).'/fixtures/ofxdata-google.ofx'],
         ];
     }
 

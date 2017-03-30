@@ -1,0 +1,114 @@
+OFXHEADER:100
+DATA:OFXSGML
+VERSION:102
+SECURITY:NONE
+ENCODING:USASCII
+CHARSET:1252
+COMPRESSION:NONE
+OLDFILEUID:NONE
+NEWFILEUID:NONE
+
+<OFX>
+    <SIGNONMSGSRSV1>
+        <SONRS>
+        <STATUS>
+        <CODE>0
+        <SEVERITY>INFO
+        </STATUS>
+        <DTSERVER>20151130171040.594
+        <LANGUAGE>ENG
+        </SONRS>
+    </SIGNONMSGSRSV1>
+    <INVSTMTMSGSRSV1>
+        <INVSTMTTRNRS>
+            <TRNUID>1001
+            <STATUS>
+                <CODE>0
+                <SEVERITY>INFO
+            </STATUS>
+            <INVSTMTRS>
+                <DTASOF>20151130171040.594
+                <CURDEF>USD
+                <INVACCTFROM>
+                    <BROKERID>google.com
+                    <ACCTID>StockersTest
+                </INVACCTFROM>
+                <INVTRANLIST>
+                    <DTSTART>20100401000000.000
+                    <DTEND>20150401000000.000
+                    <BUYSTOCK>
+                        <INVBUY>
+                            <INVTRAN>
+                                <FITID>1
+                                <DTTRADE>20100401000000.000
+                                <MEMO>
+                            </INVTRAN>
+                            <SECID>
+                                <UNIQUEID>TSE:T
+                                <UNIQUEIDTYPE>TICKER
+                            </SECID>
+                            <UNITS>5
+                            <UNITPRICE>20
+                            <TOTAL>-100
+                            <SUBACCTSEC>CASH
+                            <SUBACCTFUND>CASH
+                        </INVBUY>
+                        <BUYTYPE>BUY
+                    </BUYSTOCK>
+                    <BUYSTOCK>
+                        <INVBUY>
+                            <INVTRAN>
+                                <FITID>3
+                                <DTTRADE>20150101000000.000
+                                <MEMO>
+                            </INVTRAN>
+                            <SECID>
+                                <UNIQUEID>TSE:T
+                                <UNIQUEIDTYPE>TICKER
+                            </SECID>
+                            <UNITS>20
+                            <UNITPRICE>35
+                            <TOTAL>-700
+                            <SUBACCTSEC>CASH
+                            <SUBACCTFUND>CASH
+                        </INVBUY>
+                        <BUYTYPE>BUY
+                    </BUYSTOCK>
+                    <SELLSTOCK>
+                        <INVSELL>
+                            <INVTRAN>
+                                <FITID>2
+                                <DTTRADE>20150401000000.000
+                                <MEMO>
+                            </INVTRAN>
+                            <SECID>
+                                <UNIQUEID>TSE:T
+                                <UNIQUEIDTYPE>TICKER
+                            </SECID>
+                            <UNITS>-20
+                            <UNITPRICE>42.06
+                            <TOTAL>841.2
+                            <SUBACCTSEC>CASH
+                            <SUBACCTFUND>CASH
+                        </INVSELL>
+                        <SELLTYPE>SELL
+                    </SELLSTOCK>
+                </INVTRANLIST>
+            </INVSTMTRS>
+        </INVSTMTTRNRS>
+    </INVSTMTMSGSRSV1>
+    <SECLISTMSGSRSV1>
+        <SECLIST>
+            <STOCKINFO>
+                <SECINFO>
+                    <SECID>
+                        <UNIQUEID>TSE:T
+                        <UNIQUEIDTYPE>TICKER
+                    </SECID>
+                    <SECNAME>TELUS Corporation
+                    <TICKER>T
+                </SECINFO>
+            </STOCKINFO>
+        </SECLIST>
+    </SECLISTMSGSRSV1>
+</OFX>
