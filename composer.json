@@ -1,5 +1,5 @@
 {
-    "name": "asgrim/ofxparser",
+    "name": "fan2misa/ofxparser",
     "description": "Simple OFX file parser",
     "keywords": ["ofx", "open financial exchange", "finance", "parser"],
     "license": "MIT",
@@ -20,7 +20,7 @@
         }
     ],
     "require": {
-        "php": "~5.6|~7.0"
+		"php": ">=5.5.9"
     },
     "require-dev": {
         "phpunit/phpunit": "~5.5",
