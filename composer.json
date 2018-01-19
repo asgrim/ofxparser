@@ -1,5 +1,5 @@
 {
-    "name": "asgrim/ofxparser",
+    "name": "fan2misa/ofxparser",
     "description": "Simple OFX file parser",
     "keywords": ["ofx", "open financial exchange", "finance", "parser"],
     "license": "MIT",
@@ -30,6 +30,5 @@
         "psr-0": {
             "OfxParser": "lib/"
         }
-    },
-    "minimum-stability": "dev"
+    }
 }
