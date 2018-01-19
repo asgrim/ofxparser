@@ -30,5 +30,6 @@
         "psr-0": {
             "OfxParser": "lib/"
         }
-    }
+    },
+    "minimum-stability": "dev"
 }
