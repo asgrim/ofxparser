@@ -326,22 +326,8 @@ class Ofx
     {
         $amountString = trim($amountString);
 
-        // Decimal mark style (UK/US): 000.00 or 0,000.00
-        if (preg_match('/^-?([\d,]+)(\.?)([\d]{2})$/', $amountString) === 1) {
-            return (float)preg_replace(
-                ['/([,]+)/', '/\.?([\d]{2})$/'],
-                ['', '.$1'],
-                $amountString
-            );
-        }
-
-        // European style: 000,00 or 0.000,00
-        if (preg_match('/^-?([\d\.]+,?[\d]{2})$/', $amountString) === 1) {
-            return (float)preg_replace(
-                ['/([\.]+)/', '/,?([\d]{2})$/'],
-                ['', '.$1'],
-                $amountString
-            );
+        if (preg_match('/^(?<integer>.*)(?<separator>[\.,])(?<decimals>[0-9]+)$/', $amountString, $matches) === 1) {
+            $amountString = preg_replace('/[^0-9\-]+/', '', $matches['integer']) . '.' . $matches['decimals'];
         }
 
         return (float)$amountString;
