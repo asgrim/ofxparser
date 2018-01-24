@@ -324,6 +324,8 @@ class Ofx
      */
     private function createAmountFromStr($amountString)
     {
+        $amountString = trim($amountString);
+
         // Decimal mark style (UK/US): 000.00 or 0,000.00
         if (preg_match('/^-?([\d,]+)(\.?)([\d]{2})$/', $amountString) === 1) {
             return (float)preg_replace(
