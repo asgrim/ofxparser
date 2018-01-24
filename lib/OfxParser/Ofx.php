@@ -326,8 +326,8 @@ class Ofx
     {
         $amountString = trim($amountString);
 
-        if (preg_match('/^(?<integer>.*)(?<separator>[\.,])(?<decimals>[0-9]+)$/', $amountString, $matches) === 1) {
-            $amountString = preg_replace('/[^0-9\-]+/', '', $matches['integer']) . '.' . $matches['decimals'];
+        if (preg_match('/^(?<signal>[-\+]?)(?<integer>.*)(?<separator>[\.,])(?<decimals>[\d]+)$/', $amountString, $matches) === 1) {
+            $amountString = $matches['signal'] . preg_replace('/[^\d]+/', '', $matches['integer']) . '.' . $matches['decimals'];
         }
 
         return (float)$amountString;
