@@ -40,7 +40,7 @@ class Parser
     {
         $ofxContent = utf8_encode($ofxContent);
         $sgmlStart = stripos($ofxContent, '<OFX>');
-        $ofxSgml = trim($this->fixNewlines(substr($ofxContent, $sgmlStart)));
+        $ofxSgml = trim($this->normalizeNewlines(substr($ofxContent, $sgmlStart)));
 
         $ofxXml = $this->convertSgmlToXml($ofxSgml);
 
@@ -50,12 +50,12 @@ class Parser
     }
 
     /**
-     * Prepare OFX file contents.
+     * Normalize newlines by removing and adding newlines only before opening tags
      *
      * @param string $ofxContent
      * @return string
      */
-    private function fixNewlines($ofxContent)
+    private function normalizeNewlines($ofxContent)
     {
         // clear all new line characters first
         $ofxContent = str_replace(["\r", "\n"], '', $ofxContent);
@@ -95,7 +95,7 @@ class Parser
         $tag = ltrim(substr($line, 1, strpos($line, '>') - 1), '/');
 
         // Line is "<SOMETHING>" or "</SOMETHING>"
-        if ($line == '<' . $tag . '>' || $line == '</' . $tag . '>') {
+        if ($line === '<' . $tag . '>' || $line === '</' . $tag . '>') {
             return $line;
         }
 
