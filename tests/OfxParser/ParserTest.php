@@ -161,6 +161,7 @@ HERE
         return [
             'ofxdata.ofx' => [dirname(__DIR__).'/fixtures/ofxdata.ofx'],
             'ofxdata-oneline.ofx' => [dirname(__DIR__).'/fixtures/ofxdata-oneline.ofx'],
+            'ofxdata-oneline-with-closing-tags.ofx' => [dirname(__DIR__).'/fixtures/ofxdata-oneline-with-closing-tags.ofx'],
             'ofxdata-cmfr.ofx' => [dirname(__DIR__).'/fixtures/ofxdata-cmfr.ofx'],
             'ofxdata-bb.ofx' => [dirname(__DIR__).'/fixtures/ofxdata-bb.ofx'],
             'ofxdata-bb-two-stmtrs.ofx' => [dirname(__DIR__).'/fixtures/ofxdata-bb-two-stmtrs.ofx'],
