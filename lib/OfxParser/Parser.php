@@ -39,10 +39,8 @@ class Parser
     public function loadFromString($ofxContent)
     {
         $ofxContent = utf8_encode($ofxContent);
-        $ofxContent = $this->conditionallyAddNewlines($ofxContent);
-
         $sgmlStart = stripos($ofxContent, '<OFX>');
-        $ofxSgml = trim(substr($ofxContent, $sgmlStart));
+        $ofxSgml = trim($this->fixNewlines(substr($ofxContent, $sgmlStart)));
 
         $ofxXml = $this->convertSgmlToXml($ofxSgml);
 
@@ -52,18 +50,17 @@ class Parser
     }
 
     /**
-     * Detect if the OFX file is on one line. If it is, add newlines automatically.
+     * Prepare OFX file contents.
      *
      * @param string $ofxContent
      * @return string
      */
-    private function conditionallyAddNewlines($ofxContent)
+    private function fixNewlines($ofxContent)
     {
-        if (preg_match('/<OFX>.*<\/OFX>/', $ofxContent) === 1) {
-            return str_replace('<', "\n<", $ofxContent); // add line breaks to allow XML to parse
-        }
-
-        return $ofxContent;
+        // clear all new line characters first
+        $ofxContent = str_replace(["\r", "\n"], '', $ofxContent);
+        // add line breaks before opening tags only, to allow XML to parse
+        return preg_replace('/<[^\/!]/', "\n" . '$0', $ofxContent);
     }
 
     /**
@@ -94,17 +91,22 @@ class Parser
      */
     private function closeUnclosedXmlTags($line)
     {
-        // Matches: <SOMETHING>blah
-        // Does not match: <SOMETHING>
-        // Does not match: <SOMETHING>blah</SOMETHING>
-        if (preg_match(
-            "/<([A-Za-z0-9.]+)>([\wà-úÀ-Ú0-9\.\-\_\+\, ;:\[\]\'\&\/\\\*\(\)\+\{\|\}\!\£\$\?=@€£#%±§~`]+)$/",
-            trim($line),
-            $matches
-        )) {
-            return "<{$matches[1]}>{$matches[2]}</{$matches[1]}>";
+        $line = trim($line);
+        $tag = ltrim(substr($line, 1, strpos($line, '>') - 1), '/');
+
+        // Line is "<SOMETHING>" or "</SOMETHING>"
+        if ($line == '<' . $tag . '>' || $line == '</' . $tag . '>') {
+            return $line;
         }
-        return $line;
+
+        // Tag is properly closed
+        if (strpos($line, '</' . $tag . '>') !== false) {
+            return $line;
+        }
+
+        $lines = explode("\n", str_replace('</', "\n" . '</', $line));
+        $lines[0] = trim($lines[0]) . '</' . $tag .'>';
+        return implode('', $lines);
     }
 
     /**
@@ -115,15 +117,11 @@ class Parser
      */
     private function convertSgmlToXml($sgml)
     {
-        $sgml = str_replace(["\r\n", "\r"], "\n", $sgml);
-
-        $lines = explode("\n", $sgml);
-
         $xml = '';
-        foreach ($lines as $line) {
-            $xml .= trim($this->closeUnclosedXmlTags($line)) . "\n";
+        foreach (explode("\n", $sgml) as $line) {
+            $xml .= $this->closeUnclosedXmlTags($line) . "\n";
         }
 
-        return trim($xml);
+        return rtrim($xml);
     }
 }
