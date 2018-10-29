@@ -166,6 +166,7 @@ HERE
             'ofxdata-bb-two-stmtrs.ofx' => [dirname(__DIR__).'/fixtures/ofxdata-bb-two-stmtrs.ofx'],
             'ofxdata-credit-card.ofx' => [dirname(__DIR__).'/fixtures/ofxdata-credit-card.ofx'],
             'ofxdata-bpbfc.ofx' => [dirname(__DIR__).'/fixtures/ofxdata-bpbfc.ofx'],
+            'ofxdata-memoWithQuotes.ofx' => [dirname(__DIR__).'/fixtures/ofxdata-memoWithQuotes.ofx'],
         ];
     }
 
