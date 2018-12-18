@@ -121,6 +121,8 @@ class Parser
     {
         $sgml = str_replace(["\r\n", "\r"], "\n", $sgml);
 
+        $sgml = preg_replace('/&(?!#?[a-z0-9]+;)/', '&amp;', $sgml);
+
         $lines = explode("\n", $sgml);
 
         $xml = '';
