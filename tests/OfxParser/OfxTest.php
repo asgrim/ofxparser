@@ -87,6 +87,11 @@ class OfxTest extends \PHPUnit_Framework_TestCase
         // Test YYYYMMDDHHMMSS.XXX
         $DateTimeFour = $method->invoke($Ofx, '20081005132200.124');
         self::assertEquals($expectedDateTime->getTimestamp(), $DateTimeFour->getTimestamp());
+
+        // Test empty datetime
+        $DateTimeFour = $method->invoke($Ofx, '');
+        self::assertEquals(null, $DateTimeFour);
+
     }
 
     public function testBuildsSignOn()
