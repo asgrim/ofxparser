@@ -113,6 +113,18 @@ HERE
 <ACCTTYPE>CHECKING</ACCTTYPE>
 </BANKACCTFROM>
 HERE
+            ],[<<<HERE
+<SOMETHING>
+    <FOO>bar & restaurant
+    <BAZ>bat</BAZ>
+</SOMETHING>
+HERE
+        , <<<HERE
+<SOMETHING>
+<FOO>bar &amp; restaurant</FOO>
+<BAZ>bat</BAZ>
+</SOMETHING>
+HERE
             ],
         ];
     }
@@ -168,6 +180,7 @@ HERE
             'ofxdata-bpbfc.ofx' => [dirname(__DIR__).'/fixtures/ofxdata-bpbfc.ofx'],
             'ofxdata-memoWithQuotes.ofx' => [dirname(__DIR__).'/fixtures/ofxdata-memoWithQuotes.ofx'],
             'ofxdata-emptyDateTime.ofx' => [dirname(__DIR__).'/fixtures/ofxdata-emptyDateTime.ofx'],
+            'ofxdata-memoWithAmpersand.ofx' => [dirname(__DIR__).'/fixtures/ofxdata-memoWithAmpersand.ofx'],
         ];
     }
 
