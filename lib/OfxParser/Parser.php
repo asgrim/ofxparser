@@ -17,28 +17,32 @@ class Parser
      * Load an OFX file into this parser by way of a filename
      *
      * @param string $ofxFile A path that can be loaded with file_get_contents
+     * @param bool $encode
      * @return Ofx
      * @throws \Exception
      */
-    public function loadFromFile($ofxFile)
+    public function loadFromFile($ofxFile, $encode = true)
     {
         if (!file_exists($ofxFile)) {
             throw new \InvalidArgumentException("File '{$ofxFile}' could not be found");
         }
 
-        return $this->loadFromString(file_get_contents($ofxFile));
+        return $this->loadFromString(file_get_contents($ofxFile), $encode);
     }
 
     /**
      * Load an OFX by directly using the text content
      *
      * @param string $ofxContent
+     * @param bool $encode
      * @return  Ofx
      * @throws \Exception
      */
-    public function loadFromString($ofxContent)
+    public function loadFromString($ofxContent, $encode = true)
     {
-        $ofxContent = utf8_encode($ofxContent);
+        if ($encode) {
+            $ofxContent = utf8_encode($ofxContent);
+        }
         $ofxContent = $this->conditionallyAddNewlines($ofxContent);
 
         $sgmlStart = stripos($ofxContent, '<OFX>');
