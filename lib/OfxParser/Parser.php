@@ -38,17 +38,26 @@ class Parser
      */
     public function loadFromString($ofxContent)
     {
+        $ofxContent = str_replace(["\r\n", "\r"], "\n", $ofxContent);
         $ofxContent = utf8_encode($ofxContent);
         $ofxContent = $this->conditionallyAddNewlines($ofxContent);
 
         $sgmlStart = stripos($ofxContent, '<OFX>');
+
+        $ofxHeader =  trim(substr($ofxContent, 0, $sgmlStart-1));
+
+        $header = $this->parseHeader($ofxHeader);
+
         $ofxSgml = trim(substr($ofxContent, $sgmlStart));
 
         $ofxXml = $this->convertSgmlToXml($ofxSgml);
 
         $xml = $this->xmlLoadString($ofxXml);
 
-        return new Ofx($xml);
+        $ofx = new Ofx($xml);
+        $ofx->buildHeader($header);
+
+        return $ofx;
     }
 
     /**
@@ -108,6 +117,30 @@ class Parser
     }
 
     /**
+     * Parse the SGML Header to an Array
+     *
+     * @param string $ofxHeader
+     * @param int $sgmlStart
+     * @return array
+     */
+    private function parseHeader($ofxHeader)
+    {
+        $header = [];
+
+
+        $ofxHeader =  trim($ofxHeader);
+        $ofxHeader = preg_replace('/^\n+/m', '', $ofxHeader);
+        $ofxHeaderLines = explode("\n", $ofxHeader);
+
+        foreach ($ofxHeaderLines as $value) {
+            $tag = explode(':', $value);
+            $header[$tag[0]] = $tag[1];
+        }
+
+        return $header;
+    }
+
+    /**
      * Convert an SGML to an XML string
      *
      * @param string $sgml
@@ -115,8 +148,6 @@ class Parser
      */
     private function convertSgmlToXml($sgml)
     {
-        $sgml = str_replace(["\r\n", "\r"], "\n", $sgml);
-
         $sgml = preg_replace('/&(?!#?[a-z0-9]+;)/', '&amp;', $sgml);
 
         $lines = explode("\n", $sgml);

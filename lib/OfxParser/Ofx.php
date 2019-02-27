@@ -28,6 +28,11 @@ use OfxParser\Entities\Transaction;
 class Ofx
 {
     /**
+     * @var Header[]
+     */
+    public $header = [];
+
+    /**
      * @var SignOn
      */
     public $signOn;
@@ -79,6 +84,17 @@ class Ofx
     public function getTransactions()
     {
         return $this->bankAccount->statement->transactions;
+    }
+
+    /**
+     * @param array $header
+     * @return Ofx
+     */
+    public function buildHeader(array $header)
+    {
+        $this->header = $header;
+
+        return $this;
     }
 
     /**
