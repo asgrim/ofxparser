@@ -188,4 +188,18 @@ class OfxTest extends \PHPUnit_Framework_TestCase
             self::assertInstanceOf('DateTime', $transaction->userInitiatedDate);
         }
     }
+
+    public function testBuildsHeader()
+    {
+        $ofx = new Ofx($this->ofxData);
+        self::assertEquals('', $ofx->signOn->status->message);
+        self::assertEquals('0', $ofx->signOn->status->code);
+        self::assertEquals('INFO', $ofx->signOn->status->severity);
+        self::assertEquals('Success', $ofx->signOn->status->codeDesc);
+
+        self::assertInstanceOf('DateTime', $ofx->signOn->date);
+        self::assertEquals('ENG', $ofx->signOn->language);
+        self::assertEquals('MYBANK', $ofx->signOn->institute->name);
+        self::assertEquals('01234', $ofx->signOn->institute->id);
+    }
 }

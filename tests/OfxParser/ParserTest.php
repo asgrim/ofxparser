@@ -18,6 +18,26 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         self::assertSame('1234567891234567', (string)$account->accountNumber);
     }
 
+    public function testParseHeader()
+    {
+        $parser = new Parser();
+        $ofx = $parser->loadFromFile(__DIR__ . '/../fixtures/ofxdata.ofx');
+
+        $header = [
+            'OFXHEADER' => '100',
+            'DATA' => 'OFXSGML',
+            'VERSION' => '103',
+            'SECURITY' => 'NONE',
+            'ENCODING' => 'USASCII',
+            'CHARSET' => '1252',
+            'COMPRESSION' => 'NONE',
+            'OLDFILEUID' => 'NONE',
+            'NEWFILEUID' => 'NONE',
+        ];
+
+        self::assertSame($header, $ofx->header);
+    }
+
     public function testXmlLoadStringThrowsExceptionWithInvalidXml()
     {
         $invalidXml = '<invalid xml>';
