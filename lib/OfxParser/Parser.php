@@ -135,7 +135,7 @@ class Parser
 
         // Check if it's an XML file (OFXv2)
         if(preg_match('/^<\?xml/', $ofxHeader) === 1) {
-            $ofxHeaderLines = preg_replace(['/"/', '/\?>/', '/(<\?)(XML|OFX)/i'], '', $ofxHeaderLines);
+            $ofxHeaderLines = preg_replace(['/"/', '/\?>$/m', '/^(<\?)(XML|OFX)/mi'], '', $ofxHeaderLines);
             // Only parse OFX headers and not XML headers.
             $ofxHeaderLine = explode(' ', trim($ofxHeaderLines[1]));
 
