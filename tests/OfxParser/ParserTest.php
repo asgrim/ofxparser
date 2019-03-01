@@ -38,7 +38,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         self::assertSame($header, $ofx->header);
     }
 
-    public function testParseHeaderXML()
+    public function testParseXMLHeader()
     {
         $parser = new Parser();
         $ofx = $parser->loadFromFile(__DIR__ . '/../fixtures/ofxdata-xml.ofx');
