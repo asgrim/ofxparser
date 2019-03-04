@@ -38,6 +38,22 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         self::assertSame($header, $ofx->header);
     }
 
+    public function testParseXMLHeader()
+    {
+        $parser = new Parser();
+        $ofx = $parser->loadFromFile(__DIR__ . '/../fixtures/ofxdata-xml.ofx');
+
+        $header = [
+            'OFXHEADER' => '200',
+            'VERSION' => '200',
+            'SECURITY' => 'NONE',
+            'OLDFILEUID' => 'NONE',
+            'NEWFILEUID' => 'NONE',
+        ];
+
+        self::assertSame($header, $ofx->header);
+    }
+
     public function testXmlLoadStringThrowsExceptionWithInvalidXml()
     {
         $invalidXml = '<invalid xml>';

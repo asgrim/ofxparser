@@ -129,8 +129,23 @@ class Parser
 
 
         $ofxHeader =  trim($ofxHeader);
+        // Remove empty new lines.
         $ofxHeader = preg_replace('/^\n+/m', '', $ofxHeader);
         $ofxHeaderLines = explode("\n", $ofxHeader);
+
+        // Check if it's an XML file (OFXv2)
+        if(preg_match('/^<\?xml/', $ofxHeader) === 1) {
+            $ofxHeaderLines = preg_replace(['/"/', '/\?>$/m', '/^(<\?)(XML|OFX)/mi'], '', $ofxHeaderLines);
+            // Only parse OFX headers and not XML headers.
+            $ofxHeaderLine = explode(' ', trim($ofxHeaderLines[1]));
+
+            foreach ($ofxHeaderLine as $value) {
+                $tag = explode('=', $value);
+                $header[$tag[0]] = $tag[1];
+            }
+
+            return $header;
+        }
 
         foreach ($ofxHeaderLines as $value) {
             $tag = explode(':', $value);
