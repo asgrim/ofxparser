@@ -1,5 +1,5 @@
 {
-    "name": "hucharal/ofxparser",
+    "name": "asgrim/ofxparser",
     "description": "Simple OFX file parser",
     "keywords": ["ofx", "open financial exchange", "finance", "parser"],
     "license": "MIT",
