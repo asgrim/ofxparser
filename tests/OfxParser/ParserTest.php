@@ -236,4 +236,19 @@ HERE
         $parser = new Parser();
         $parser->loadFromString($content);
     }
+
+    public function testXmlLoadStringWithSelfClosingTag()
+    {
+        $parser = new Parser();
+
+        try {
+            $ofx = $parser->loadFromFile(__DIR__ . '/../fixtures/ofxdata-selfclose.ofx');
+        } catch (\RuntimeException $e) {
+            if (stripos($e->getMessage(), 'Failed to parse OFX') !== false) {
+                self::assertTrue(false, 'Xml with invalid self closing tag');
+            }
+        }
+
+        self::assertTrue(true);
+    }
 }

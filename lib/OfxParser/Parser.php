@@ -52,6 +52,8 @@ class Parser
 
         $ofxXml = $this->convertSgmlToXml($ofxSgml);
 
+        $ofxXml = $this->closeSelfTags($ofxXml);
+
         $xml = $this->xmlLoadString($ofxXml);
 
         $ofx = new Ofx($xml);
@@ -173,5 +175,35 @@ class Parser
         }
 
         return trim($xml);
+    }
+
+    /**
+     * Check for self closing tags
+     *
+     * @param string $xml
+     * @return string
+     */
+    private function closeSelfTags($xml)
+    {
+        $lines = explode("\n", $xml);
+        $tags = [];
+
+        foreach ($lines as $i => $line) {
+            if (!preg_match("/^<(\/?[A-Za-z0-9.]+)>$/", trim($line), $matches)) {
+                continue;
+            }
+
+            if ($matches[1][0] == '/') {
+                $tag = substr($matches[1], 1);
+
+                while (($last = array_pop($tags)) && $last[1] != $tag) {
+                    $lines[$last[0]] = "<{$last[1]}/>";
+                }
+            } else {
+                $tags[] = [$i, $matches[1]];
+            }
+        }
+
+        return implode("\n", $lines);
     }
 }
