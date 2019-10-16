@@ -52,8 +52,6 @@ class Parser
 
         $ofxXml = $this->convertSgmlToXml($ofxSgml);
 
-        $ofxXml = $this->closeSelfTags($ofxXml);
-
         $xml = $this->xmlLoadString($ofxXml);
 
         $ofx = new Ofx($xml);
@@ -168,31 +166,18 @@ class Parser
         $sgml = preg_replace('/&(?!#?[a-z0-9]+;)/', '&amp;', $sgml);
 
         $lines = explode("\n", $sgml);
-
-        $xml = '';
-        foreach ($lines as $line) {
-            $xml .= trim($this->closeUnclosedXmlTags($line)) . "\n";
-        }
-
-        return trim($xml);
-    }
-
-    /**
-     * Check for self closing tags
-     *
-     * @param string $xml
-     * @return string
-     */
-    private function closeSelfTags($xml)
-    {
-        $lines = explode("\n", $xml);
         $tags = [];
 
-        foreach ($lines as $i => $line) {
+        foreach ($lines as $i => &$line) {
+            $line = trim($this->closeUnclosedXmlTags($line)) . "\n";
+
+            // Matches tags like <SOMETHING> or </SOMETHING>
             if (!preg_match("/^<(\/?[A-Za-z0-9.]+)>$/", trim($line), $matches)) {
                 continue;
             }
 
+            // If matches </SOMETHING>, looks back and replaces all tags like
+            // <OTHERTHING> to <OTHERTHING/> until finds the opening tag <SOMETHING>
             if ($matches[1][0] == '/') {
                 $tag = substr($matches[1], 1);
 
@@ -204,6 +189,6 @@ class Parser
             }
         }
 
-        return implode("\n", $lines);
+        return implode("\n", array_map('trim', $lines));
     }
 }
