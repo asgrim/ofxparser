@@ -166,12 +166,29 @@ class Parser
         $sgml = preg_replace('/&(?!#?[a-z0-9]+;)/', '&amp;', $sgml);
 
         $lines = explode("\n", $sgml);
+        $tags = [];
 
-        $xml = '';
-        foreach ($lines as $line) {
-            $xml .= trim($this->closeUnclosedXmlTags($line)) . "\n";
+        foreach ($lines as $i => &$line) {
+            $line = trim($this->closeUnclosedXmlTags($line)) . "\n";
+
+            // Matches tags like <SOMETHING> or </SOMETHING>
+            if (!preg_match("/^<(\/?[A-Za-z0-9.]+)>$/", trim($line), $matches)) {
+                continue;
+            }
+
+            // If matches </SOMETHING>, looks back and replaces all tags like
+            // <OTHERTHING> to <OTHERTHING/> until finds the opening tag <SOMETHING>
+            if ($matches[1][0] == '/') {
+                $tag = substr($matches[1], 1);
+
+                while (($last = array_pop($tags)) && $last[1] != $tag) {
+                    $lines[$last[0]] = "<{$last[1]}/>";
+                }
+            } else {
+                $tags[] = [$i, $matches[1]];
+            }
         }
 
-        return trim($xml);
+        return implode("\n", array_map('trim', $lines));
     }
 }
