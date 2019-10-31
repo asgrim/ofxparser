@@ -11,7 +11,7 @@ namespace OfxParser;
  * @author James Titcumb <hello@jamestitcumb.com>
  * @author Oliver Lowe <mrtriangle@gmail.com>
  */
-class Parser
+class Parserv2
 {
     /**
      * Load an OFX file into this parser by way of a filename
@@ -38,26 +38,10 @@ class Parser
      */
     public function loadFromString($ofxContent)
     {
-        $ofxContent = str_replace(["\r\n", "\r"], "\n", $ofxContent);
         $ofxContent = utf8_encode($ofxContent);
-        $ofxContent = $this->conditionallyAddNewlines($ofxContent);
+        $xml = $this->xmlLoadString($ofxContent);
 
-        $sgmlStart = stripos($ofxContent, '<OFX>');
-
-        $ofxHeader =  trim(substr($ofxContent, 0, $sgmlStart-1));
-
-        $header = $this->parseHeader($ofxHeader);
-
-        $ofxSgml = trim(substr($ofxContent, $sgmlStart));
-
-        $ofxXml = $this->convertSgmlToXml($ofxSgml);
-
-        $xml = $this->xmlLoadString($ofxXml);
-
-        $ofx = new Ofx($xml);
-        $ofx->buildHeader($header);
-
-        return $ofx;
+        return new Ofx($xml);
     }
 
     /**
@@ -111,52 +95,13 @@ class Parser
         // Does not match: <SOMETHING>
         // Does not match: <SOMETHING>blah</SOMETHING>
         if (preg_match(
-            "/<([A-Za-z0-9.]+)>([\wà-úÀ-Ú0-9\.\-\_\+\, ;:\[\]\'\&\/\\\*\(\)\+\{\|\}\!\£\$\?=@€£#%±§~`\"]+)$/",
+            "/<([A-Za-z0-9.]+)>([\wà-úÀ-Ú0-9\.\-\_\+\, ;:\[\]\'\&\/\\\*\(\)\+\{\|\}\!\£\$\?=@€£#%±§~`]+)$/",
             trim($line),
             $matches
         )) {
             return "<{$matches[1]}>{$matches[2]}</{$matches[1]}>";
         }
         return $line;
-    }
-
-    /**
-     * Parse the SGML Header to an Array
-     *
-     * @param string $ofxHeader
-     * @param int $sgmlStart
-     * @return array
-     */
-    private function parseHeader($ofxHeader)
-    {
-        $header = [];
-
-
-        $ofxHeader =  trim($ofxHeader);
-        // Remove empty new lines.
-        $ofxHeader = preg_replace('/^\n+/m', '', $ofxHeader);
-        $ofxHeaderLines = explode("\n", $ofxHeader);
-
-        // Check if it's an XML file (OFXv2)
-        if(preg_match('/^<\?xml/', $ofxHeader) === 1) {
-            $ofxHeaderLines = preg_replace(['/"/', '/\?>$/m', '/^(<\?)(XML|OFX)/mi'], '', $ofxHeaderLines);
-            // Only parse OFX headers and not XML headers.
-            $ofxHeaderLine = explode(' ', trim($ofxHeaderLines[1]));
-
-            foreach ($ofxHeaderLine as $value) {
-                $tag = explode('=', $value);
-                $header[$tag[0]] = $tag[1];
-            }
-
-            return $header;
-        }
-
-        foreach ($ofxHeaderLines as $value) {
-            $tag = explode(':', $value);
-            $header[$tag[0]] = $tag[1];
-        }
-
-        return $header;
     }
 
     /**
@@ -167,34 +112,15 @@ class Parser
      */
     private function convertSgmlToXml($sgml)
     {
-        $sgml = preg_replace('/&(?!#?[a-z0-9]+;)/', '&amp;', $sgml);
-
-        $sgml = preg_replace('/&(?!#?[a-z0-9]+;)/', '&amp;', $sgml);
+        $sgml = str_replace(["\r\n", "\r"], "\n", $sgml);
 
         $lines = explode("\n", $sgml);
-        $tags = [];
 
-        foreach ($lines as $i => &$line) {
-            $line = trim($this->closeUnclosedXmlTags($line)) . "\n";
-
-            // Matches tags like <SOMETHING> or </SOMETHING>
-            if (!preg_match("/^<(\/?[A-Za-z0-9.]+)>$/", trim($line), $matches)) {
-                continue;
-            }
-
-            // If matches </SOMETHING>, looks back and replaces all tags like
-            // <OTHERTHING> to <OTHERTHING/> until finds the opening tag <SOMETHING>
-            if ($matches[1][0] == '/') {
-                $tag = substr($matches[1], 1);
-
-                while (($last = array_pop($tags)) && $last[1] != $tag) {
-                    $lines[$last[0]] = "<{$last[1]}/>";
-                }
-            } else {
-                $tags[] = [$i, $matches[1]];
-            }
+        $xml = '';
+        foreach ($lines as $line) {
+            $xml .= trim($this->closeUnclosedXmlTags($line)) . "\n";
         }
 
-        return implode("\n", array_map('trim', $lines));
+        return trim($xml);
     }
 }
