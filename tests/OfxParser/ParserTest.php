@@ -2,12 +2,13 @@
 
 namespace OfxParserTest;
 
+use PHPUnit\Framework\TestCase;
 use OfxParser\Parser;
 
 /**
  * @covers OfxParser\Parser
  */
-class ParserTest extends \PHPUnit_Framework_TestCase
+class ParserTest extends TestCase
 {
     public function testCreditCardStatementTransactionsAreLoaded()
     {
@@ -65,6 +66,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
             $method->invoke(new Parser(), $invalidXml);
         } catch (\Exception $e) {
             if (stripos($e->getMessage(), 'Failed to parse OFX') !== false) {
+                $this->assertTrue(true);
                 return true;
             }
 
@@ -234,7 +236,14 @@ HERE
         $content = file_get_contents($filename);
 
         $parser = new Parser();
-        $parser->loadFromString($content);
+
+        try {
+            $parser->loadFromString($content);
+        } catch (\Exception $e) {
+            throw $e;
+        }
+
+        $this->assertTrue(true);
     }
 
     public function testXmlLoadStringWithSelfClosingTag()
