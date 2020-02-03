@@ -37,7 +37,7 @@ Most common nodes are support. If you come across an inaccessible node in your O
 
 ## Investments Support
 
-Investments look much different than bank / credit card transactions. This version supports a subset of the nodes in the OFX 2.0.3 spec, per the immediate needs of the author(s). You may want to reference the OFX documentation if you choose to implement this library.
+Investments look much different than bank / credit card transactions. This version supports a subset of the nodes in the OFX 2.0.3 spec, per the immediate needs of the author(s). You may want to reference the OFX documentation if you choose to implement this library. In particular, this does not currently process investment positions (INVPOSLIST) or referenced security definitions (SECINFO).
 
 This is not a pure pass-through of fields, such as this implementation in python: [csingley/ofxtools](https://github.com/csingley/ofxtools). This package contains fields that have been "translated" on occasion to make it more friendly to those less-familiar with the investments OFX spec.
 
@@ -48,7 +48,7 @@ To load investments from a Quicken (QFX) file or a MS Money (OFX / XML) file:
 use OfxParser\Entities\Investment as InvEntities;
 
 // Load the OFX file
-$ofxParser = new \OfxParser\Parser();
+$ofxParser = new \OfxParser\Parsers\Investment();
 $ofx = $ofxParser->loadFromFile('/path/to/your/investments_file.ofx');
 
 // Loop over investment accounts (named bankAccounts from base lib)
