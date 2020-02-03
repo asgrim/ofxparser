@@ -221,7 +221,6 @@ HERE
             'ofxdata-emptyDateTime.ofx' => [dirname(__DIR__).'/fixtures/ofxdata-emptyDateTime.ofx'],
             'ofxdata-memoWithAmpersand.ofx' => [dirname(__DIR__).'/fixtures/ofxdata-memoWithAmpersand.ofx'],
             'ofxdata-banking-xml200.ofx' => [dirname(__DIR__).'/fixtures/ofxdata-banking-xml200.ofx'],
-            'ofxdata-google.ofx' => [dirname(__DIR__).'/fixtures/ofxdata-google.ofx'],
         ];
     }
 

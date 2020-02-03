@@ -93,31 +93,7 @@ class InvestmentTest extends TestCase
             self::assertTrue(count($account->statement->transactions) > 0);
         }
 
-        foreach ($account->statement->transactions as $t) {
-            if (isset($expected[$t->uniqueId])) {
-                $data = $expected[$t->uniqueId];
-                foreach ($data as $prop => $val) {
-                    // TEMP:
-                    if ($prop == 'actionCode') {
-                        continue;
-                    }
-
-                    if ($val instanceof \DateTimeInterface) {
-                        self::assertSame(
-                            $val->format('Y-m-d'),
-                            $t->{$prop}->format('Y-m-d'),
-                            'Failed comparison for "' . $prop .'"'
-                        );
-                    } else {
-                        self::assertSame(
-                            $val,
-                            $t->{$prop},
-                            'Failed comparison for "' . $prop .'"'
-                        );
-                    }
-                }
-            }
-        }
+        $this->validateTransactions($account->statement->transactions);
     }
 
     public function testParseInvestmentsXMLOneLine()
@@ -149,31 +125,7 @@ class InvestmentTest extends TestCase
             self::assertTrue(count($account->statement->transactions) > 0);
         }
 
-        foreach ($account->statement->transactions as $t) {
-            if (isset($expected[$t->uniqueId])) {
-                $data = $expected[$t->uniqueId];
-                foreach ($data as $prop => $val) {
-                    // TEMP:
-                    if ($prop == 'actionCode') {
-                        continue;
-                    }
-
-                    if ($val instanceof \DateTimeInterface) {
-                        self::assertSame(
-                            $val->format('Y-m-d'),
-                            $t->{$prop}->format('Y-m-d'),
-                            'Failed comparison for "' . $prop .'"'
-                        );
-                    } else {
-                        self::assertSame(
-                            $val,
-                            $t->{$prop},
-                            'Failed comparison for "' . $prop .'"'
-                        );
-                    }
-                }
-            }
-        }
+        $this->validateTransactions($account->statement->transactions);
     }
 
     public function testParseInvestmentsXMLMultipleAccounts()
@@ -218,28 +170,64 @@ class InvestmentTest extends TestCase
         }
 
         foreach ($ofx->bankAccounts as $account) {
-            foreach ($account->statement->transactions as $t) {
-                if (isset($expected[$t->uniqueId])) {
-                    $data = $expected[$t->uniqueId];
-                    foreach ($data as $prop => $val) {
-                        // TEMP:
-                        if ($prop == 'actionCode') {
-                            continue;
-                        }
+            $this->validateTransactions($account->statement->transactions);
+        }
+    }
 
-                        if ($val instanceof \DateTimeInterface) {
-                            self::assertSame(
-                                $val->format('Y-m-d'),
-                                $t->{$prop}->format('Y-m-d'),
-                                'Failed comparison for "' . $prop .'"'
-                            );
-                        } else {
-                            self::assertSame(
-                                $val,
-                                $t->{$prop},
-                                'Failed comparison for "' . $prop .'"'
-                            );
-                        }
+    public function testGoogleFinanceInvestments()
+    {
+        $parser = new InvestmentParser();
+        $ofx = $parser->loadFromFile(__DIR__ . '/../../fixtures/ofxdata-google.ofx');
+
+        $account = reset($ofx->bankAccounts);
+        self::assertSame('1001', $account->transactionUid);
+        self::assertSame('google.com', $account->brokerId);
+        self::assertSame('StockersTest', $account->accountNumber);
+
+        // Check some transactions:
+        $expected = array(
+            '1' => array(
+                'tradeDate' => new \DateTime('2010-04-01'),
+                'securityId' => 'TSE:T',
+                'securityIdType' => 'TICKER',
+                'units' => '5',
+                'unitPrice' => '20',
+                'total' => '-100',
+                'buyType' => 'BUY',
+                'actionCode' => 'BUYSTOCK',
+            ),
+        );
+
+        if (count($expected)) {
+            self::assertTrue(count($account->statement->transactions) > 0);
+        }
+
+        $this->validateTransactions($account->statement->transactions);
+    }
+
+    protected function validateTransactions($transactions)
+    {
+        foreach ($transactions as $t) {
+            if (isset($expected[$t->uniqueId])) {
+                $data = $expected[$t->uniqueId];
+                foreach ($data as $prop => $val) {
+                    // TEMP:
+                    if ($prop == 'actionCode') {
+                        continue;
+                    }
+
+                    if ($val instanceof \DateTimeInterface) {
+                        self::assertSame(
+                            $val->format('Y-m-d'),
+                            $t->{$prop}->format('Y-m-d'),
+                            'Failed comparison for "' . $prop .'"'
+                        );
+                    } else {
+                        self::assertSame(
+                            $val,
+                            $t->{$prop},
+                            'Failed comparison for "' . $prop .'"'
+                        );
                     }
                 }
             }
