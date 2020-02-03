@@ -93,7 +93,7 @@ class InvestmentTest extends TestCase
             self::assertTrue(count($account->statement->transactions) > 0);
         }
 
-        $this->validateTransactions($account->statement->transactions);
+        $this->validateTransactions($account->statement->transactions, $expected);
     }
 
     public function testParseInvestmentsXMLOneLine()
@@ -125,7 +125,7 @@ class InvestmentTest extends TestCase
             self::assertTrue(count($account->statement->transactions) > 0);
         }
 
-        $this->validateTransactions($account->statement->transactions);
+        $this->validateTransactions($account->statement->transactions, $expected);
     }
 
     public function testParseInvestmentsXMLMultipleAccounts()
@@ -170,7 +170,11 @@ class InvestmentTest extends TestCase
         }
 
         foreach ($ofx->bankAccounts as $account) {
-            $this->validateTransactions($account->statement->transactions);
+            $myExpected = isset($expected[$account->accountNumber])
+                ? $expected[$account->accountNumber]
+                : array();
+
+            $this->validateTransactions($account->statement->transactions, $myExpected);
         }
     }
 
@@ -202,10 +206,10 @@ class InvestmentTest extends TestCase
             self::assertTrue(count($account->statement->transactions) > 0);
         }
 
-        $this->validateTransactions($account->statement->transactions);
+        $this->validateTransactions($account->statement->transactions, $expected);
     }
 
-    protected function validateTransactions($transactions)
+    protected function validateTransactions($transactions, $expected)
     {
         foreach ($transactions as $t) {
             if (isset($expected[$t->uniqueId])) {
