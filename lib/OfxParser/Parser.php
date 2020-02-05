@@ -2,6 +2,8 @@
 
 namespace OfxParser;
 
+use SimpleXMLElement;
+
 /**
  * An OFX parser library
  *
@@ -13,6 +15,16 @@ namespace OfxParser;
  */
 class Parser
 {
+    /**
+     * Factory to extend support for OFX document structures.
+     * @param SimpleXMLElement $xml
+     * @return Ofx
+     */
+    protected function createOfx(SimpleXMLElement $xml)
+    {
+        return new Ofx($xml);
+    }
+
     /**
      * Load an OFX file into this parser by way of a filename
      *
@@ -40,21 +52,22 @@ class Parser
     {
         $ofxContent = str_replace(["\r\n", "\r"], "\n", $ofxContent);
         $ofxContent = utf8_encode($ofxContent);
-        $ofxContent = $this->conditionallyAddNewlines($ofxContent);
 
         $sgmlStart = stripos($ofxContent, '<OFX>');
-
-        $ofxHeader =  trim(substr($ofxContent, 0, $sgmlStart-1));
-
+        $ofxHeader =  trim(substr($ofxContent, 0, $sgmlStart));
         $header = $this->parseHeader($ofxHeader);
 
         $ofxSgml = trim(substr($ofxContent, $sgmlStart));
-
-        $ofxXml = $this->convertSgmlToXml($ofxSgml);
+        if (stripos($ofxHeader, '<?xml') === 0) {
+            $ofxXml = $ofxSgml;
+        } else {
+            $ofxSgml = $this->conditionallyAddNewlines($ofxSgml);
+            $ofxXml = $this->convertSgmlToXml($ofxSgml);
+        }
 
         $xml = $this->xmlLoadString($ofxXml);
 
-        $ofx = new Ofx($xml);
+        $ofx = $this->createOfx($xml);
         $ofx->buildHeader($header);
 
         return $ofx;
@@ -103,12 +116,18 @@ class Parser
      */
     private function closeUnclosedXmlTags($line)
     {
+        // Special case discovered where empty content tag wasn't closed
+        $line = trim($line);
+        if (preg_match('/<MEMO>$/', $line) === 1) {
+            return '<MEMO></MEMO>';
+        }
+
         // Matches: <SOMETHING>blah
         // Does not match: <SOMETHING>
         // Does not match: <SOMETHING>blah</SOMETHING>
         if (preg_match(
             "/<([A-Za-z0-9.]+)>([\wà-úÀ-Ú0-9\.\-\_\+\, ;:\[\]\'\&\/\\\*\(\)\+\{\|\}\!\£\$\?=@€£#%±§~`\"]+)$/",
-            trim($line),
+            $line,
             $matches
         )) {
             return "<{$matches[1]}>{$matches[2]}</{$matches[1]}>";
@@ -128,16 +147,16 @@ class Parser
         $header = [];
 
 
-        $ofxHeader =  trim($ofxHeader);
+        $ofxHeader = trim($ofxHeader);
         // Remove empty new lines.
         $ofxHeader = preg_replace('/^\n+/m', '', $ofxHeader);
-        $ofxHeaderLines = explode("\n", $ofxHeader);
 
         // Check if it's an XML file (OFXv2)
         if(preg_match('/^<\?xml/', $ofxHeader) === 1) {
-            $ofxHeaderLines = preg_replace(['/"/', '/\?>$/m', '/^(<\?)(XML|OFX)/mi'], '', $ofxHeaderLines);
             // Only parse OFX headers and not XML headers.
-            $ofxHeaderLine = explode(' ', trim($ofxHeaderLines[1]));
+            $ofxHeader = preg_replace('/<\?xml .*?\?>\n?/', '', $ofxHeader);
+            $ofxHeader = preg_replace(['/"/', '/\?>/', '/<\?OFX/i'], '', $ofxHeader);
+            $ofxHeaderLine = explode(' ', trim($ofxHeader));
 
             foreach ($ofxHeaderLine as $value) {
                 $tag = explode('=', $value);
@@ -147,6 +166,7 @@ class Parser
             return $header;
         }
 
+        $ofxHeaderLines = explode("\n", $ofxHeader);
         foreach ($ofxHeaderLines as $value) {
             $tag = explode(':', $value);
             $header[$tag[0]] = $tag[1];

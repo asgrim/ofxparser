@@ -2,12 +2,13 @@
 
 namespace OfxParserTest;
 
+use PHPUnit\Framework\TestCase;
 use OfxParser\Ofx;
 
 /**
  * @covers OfxParser\Ofx
  */
-class OfxTest extends \PHPUnit_Framework_TestCase
+class OfxTest extends TestCase
 {
     /**
      * @var \SimpleXMLElement
@@ -22,76 +23,6 @@ class OfxTest extends \PHPUnit_Framework_TestCase
             self::markTestSkipped('Could not find data file, cannot test Ofx Class');
         }
         $this->ofxData = simplexml_load_string(file_get_contents($ofxFile));
-    }
-
-    public function amountConversionProvider()
-    {
-        return [
-            '1000.00' => ['1000.00', 1000.0],
-            '1000,00' => ['1000,00', 1000.0],
-            '1,000.00' => ['1,000.00', 1000.0],
-            '1.000,00' => ['1.000,00', 1000.0],
-            '-1000.00' => ['-1000.00', -1000.0],
-            '-1000,00' => ['-1000,00', -1000.0],
-            '-1,000.00' => ['-1,000.00', -1000.0],
-            '-1.000,00' => ['-1.000,00', -1000.0],
-            '1' => ['1', 1.0],
-            '10' => ['10', 10.0],
-            '100' => ['100', 1.0], // @todo this is weird behaviour, should not really expect this
-            '+1' => ['+1', 1.0],
-            '+10' => ['+10', 10.0],
-            '+1000.00' => ['+1000.00', 1000.0],
-            '+1000,00' => ['+1000,00', 1000.0],
-            '+1,000.00' => ['+1,000.00', 1000.0],
-            '+1.000,00' => ['+1.000,00', 1000.0],
-        ];
-    }
-
-    /**
-     * @param string $input
-     * @param float $output
-     * @dataProvider amountConversionProvider
-     */
-    public function testCreateAmountFromStr($input, $output)
-    {
-        $method = new \ReflectionMethod(Ofx::class, 'createAmountFromStr');
-        $method->setAccessible(true);
-
-        $ofx = new Ofx($this->ofxData);
-
-        self::assertSame($output, $method->invoke($ofx, $input));
-    }
-
-    public function testCreateDateTimeFromOFXDateFormats()
-    {
-        // October 5, 2008, at 1:22 and 124 milliseconds pm, Easter Standard Time
-        $expectedDateTime = new \DateTime('2008-10-05 13:22:00');
-
-        $method = new \ReflectionMethod(Ofx::class, 'createDateTimeFromStr');
-        $method->setAccessible(true);
-
-        $Ofx = new Ofx($this->ofxData);
-
-        // Test OFX Date Format YYYYMMDDHHMMSS.XXX[gmt offset:tz name]
-        $DateTimeOne = $method->invoke($Ofx, '20081005132200.124[-5:EST]');
-        self::assertEquals($expectedDateTime->getTimestamp(), $DateTimeOne->getTimestamp());
-
-        // Test YYYYMMDD
-        $DateTimeTwo = $method->invoke($Ofx, '20081005');
-        self::assertEquals($expectedDateTime->format('Y-m-d'), $DateTimeTwo->format('Y-m-d'));
-
-        // Test YYYYMMDDHHMMSS
-        $DateTimeThree = $method->invoke($Ofx, '20081005132200');
-        self::assertEquals($expectedDateTime->getTimestamp(), $DateTimeThree->getTimestamp());
-
-        // Test YYYYMMDDHHMMSS.XXX
-        $DateTimeFour = $method->invoke($Ofx, '20081005132200.124');
-        self::assertEquals($expectedDateTime->getTimestamp(), $DateTimeFour->getTimestamp());
-
-        // Test empty datetime
-        $DateTimeFour = $method->invoke($Ofx, '');
-        self::assertEquals(null, $DateTimeFour);
-
     }
 
     public function testBuildsSignOn()

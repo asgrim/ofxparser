@@ -9,11 +9,10 @@
     stopOnFailure="false"
     processIsolation="false"
     backupGlobals="false"
-    syntaxCheck="true"
     columns="max"
 >
     <testsuite name="OFX Parser unit tests">
-        <directory>./tests/</directory>
+        <directory>./tests</directory>
     </testsuite>
 
     <filter>
