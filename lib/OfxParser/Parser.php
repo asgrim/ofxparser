@@ -30,7 +30,7 @@ class Parser
      *
      * @param string $ofxFile A path that can be loaded with file_get_contents
      * @return Ofx
-     * @throws \Exception
+     * @throws \InvalidArgumentException
      */
     public function loadFromFile($ofxFile)
     {
@@ -46,7 +46,6 @@ class Parser
      *
      * @param string $ofxContent
      * @return  Ofx
-     * @throws \Exception
      */
     public function loadFromString($ofxContent)
     {
@@ -92,7 +91,7 @@ class Parser
      * Load an XML string without PHP errors - throws exception instead
      *
      * @param string $xmlString
-     * @throws \Exception
+     * @throws \RuntimeException
      * @return \SimpleXMLElement
      */
     private function xmlLoadString($xmlString)
