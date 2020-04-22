@@ -158,6 +158,8 @@ class Parser
             $ofxHeaderLine = explode(' ', trim($ofxHeader));
 
             foreach ($ofxHeaderLine as $value) {
+                 if ($value == null)
+                    break;
                 $tag = explode('=', $value);
                 $header[$tag[0]] = $tag[1];
             }
