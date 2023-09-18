@@ -38,7 +38,9 @@ class Parser
      */
     public function loadFromString($ofxContent)
     {
-        $ofxContent = utf8_encode($ofxContent);
+        if (mb_detect_encoding($ofxContent, 'UTF-8', true) !== 'UTF-8') {
+            $ofxContent = utf8_encode($ofxContent);
+        }
         $ofxContent = $this->conditionallyAddNewlines($ofxContent);
 
         $sgmlStart = stripos($ofxContent, '<OFX>');
